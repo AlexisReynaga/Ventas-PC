@@ -11,6 +11,9 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// Página pública personalizada
+Route::view('home-page', 'home')->name('site.home');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
