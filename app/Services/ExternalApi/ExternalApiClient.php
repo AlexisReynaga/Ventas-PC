@@ -78,9 +78,24 @@ class ExternalApiClient
         return $this->request('GET', '/users', ['query' => $filters]);
     }
 
+    public function updateUserRole(int $id, string $role): array
+    {
+        return $this->request('PATCH', '/users/' . $id . '/role', ['json' => ['role' => $role]]);
+    }
+
+    public function registerUser(array $data): array
+    {
+        return $this->request('POST', '/auth/register', ['json' => $data], false);
+    }
+
     protected function request(string $method, string $path, array $options = [], bool $auth = true): array
     {
         $url = $this->baseUrl . $path;
+        // Construimos query string manualmente (Laravel Http PendingRequest no tiene ->query())
+        if (isset($options['query']) && is_array($options['query']) && $options['query']) {
+            $queryString = http_build_query($options['query']);
+            $url .= (str_contains($url, '?') ? '&' : '?') . $queryString;
+        }
         $headers = ['Accept' => 'application/json'];
         if ($auth) {
             // Si el usuario autenticó contra la API usamos su token, sino token admin por defecto.
@@ -89,10 +104,6 @@ class ExternalApiClient
         }
 
         $req = Http::withHeaders($headers);
-
-        if (isset($options['query'])) {
-            $req = $req->query($options['query']);
-        }
 
         if (isset($options['json'])) {
             $req = $req->asJson()->withBody(json_encode($options['json']), 'application/json');
@@ -111,9 +122,6 @@ class ExternalApiClient
                 throw new ExternalApiException('Token de usuario expirado o inválido', 401);
             }
             $req = Http::withHeaders($headers);
-            if (isset($options['query'])) {
-                $req = $req->query($options['query']);
-            }
             if (isset($options['json'])) {
                 $req = $req->asJson()->withBody(json_encode($options['json']), 'application/json');
             }

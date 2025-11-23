@@ -24,11 +24,17 @@
 
             {{-- Menú escritorio --}}
             <div class="hidden md:flex items-center gap-8 text-sm">
-                <a href="#inicio" class="hover:text-emerald-400 transition-colors">Inicio</a>
-                <a href="#productos" class="hover:text-emerald-400 transition-colors">Productos</a>
-                <a href="#servicios" class="hover:text-emerald-400 transition-colors">Servicios</a>
-                <a href="#nosotros" class="hover:text-emerald-400 transition-colors">Sobre Nosotros</a>
-                <a href="#contacto" class="hover:text-emerald-400 transition-colors">Contáctanos</a>
+                <a href="/" class="hover:text-emerald-400 transition-colors">Inicio</a>
+                @php($isAdmin = Auth::check() && session('api_user_role')==='admin')
+                @if($isAdmin)
+                    <a href="{{ route('productos.admin') }}" class="hover:text-emerald-400 transition-colors">Productos</a>
+                    <a href="{{ route('servicios.admin') }}" class="hover:text-emerald-400 transition-colors">Servicios</a>
+                    <a href="{{ route('admin.users') }}" class="hover:text-emerald-400 transition-colors">Usuarios</a>
+                    <a href="{{ route('admin.finanzas') }}" class="hover:text-emerald-400 transition-colors">Finanzas</a>
+                @else
+                    <a href="{{ route('productos.index') }}" class="hover:text-emerald-400 transition-colors">Productos</a>
+                    <a href="{{ route('servicios.index') }}" class="hover:text-emerald-400 transition-colors">Servicios</a>
+                @endif
             </div>
 
             {{-- Botones --}}
@@ -88,17 +94,14 @@
                 </p>
 
                 <div class="flex flex-wrap gap-4 pt-2">
-                    <a href="#productos"
-                       class="px-6 py-3 rounded-full bg-emerald-500 text-slate-950 font-semibold text-sm md:text-base hover:bg-emerald-400 shadow-lg shadow-emerald-500/40 transition">
-                        Ver Productos
-                    </a>
-                    <a href="#contacto"
-                       class="px-6 py-3 rounded-full border border-slate-500 text-sm md:text-base font-medium hover:border-emerald-400 hover:text-emerald-400 transition">
-                        Solicitar Cotización
-                    </a>
-                    @if(Auth::check())
-                        <a href="{{ route('external.products.index') }}" class="px-6 py-3 rounded-full border border-emerald-500 text-sm md:text-base font-medium hover:bg-emerald-500 hover:text-slate-950 transition">
-                            Productos API
+                    @php($isAdmin = Auth::check() && session('api_user_role')==='admin')
+                    @if($isAdmin)
+                    @else
+                        <a href="{{ route('productos.index') }}" class="px-6 py-3 rounded-full bg-emerald-500 text-slate-950 font-semibold text-sm md:text-base hover:bg-emerald-400 shadow-lg shadow-emerald-500/40 transition">
+                            Ver Productos
+                        </a>
+                        <a href="{{ route('servicios.index') }}" class="px-6 py-3 rounded-full border border-slate-500 text-sm md:text-base font-medium hover:border-emerald-400 hover:text-emerald-400 transition">
+                            Ver Servicios
                         </a>
                     @endif
                 </div>
@@ -133,7 +136,5 @@
             </div>
         </div>
     </section>
-
-    {{-- Aquí ya podrías seguir con tus secciones de Productos, Servicios, etc. --}}
 </body>
 </html>
