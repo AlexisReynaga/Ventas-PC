@@ -4,6 +4,7 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
+use App\Http\Controllers\AuthApiController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -15,7 +16,7 @@ Route::get('/', function () {
 Route::view('home-page', 'home')->name('site.home');
 
 Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth'])
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
@@ -36,3 +37,12 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 });
+
+// Consumo de API externa (ejemplo listado productos)
+Route::get('external/products', [\App\Http\Controllers\ExternalProductsController::class, 'index'])
+    ->middleware('auth')
+    ->name('external.products.index');
+
+// Registro vía API (reemplaza registro local de Fortify)
+Route::get('register', [AuthApiController::class, 'showRegister'])->name('register');
+Route::post('register', [AuthApiController::class, 'register'])->name('register.store');

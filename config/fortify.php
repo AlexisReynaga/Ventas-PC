@@ -144,14 +144,9 @@ return [
     */
 
     'features' => [
-        Features::registration(),
-        Features::resetPasswords(),
-        Features::emailVerification(),
-        Features::twoFactorAuthentication([
-            'confirm' => true,
-            'confirmPassword' => true,
-            // 'window' => 0,
-        ]),
+        // Todo el ciclo de vida de autenticación (registro, reset, verificación, 2FA)
+        // se delega a la API. Aquí solo mantenemos login de sesión.
+        // Sin Features locales activas.
     ],
 
 ];
