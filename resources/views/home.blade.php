@@ -33,14 +33,30 @@
 
             {{-- Botones --}}
             <div class="hidden md:flex items-center gap-3">
-                <a href="{{ route('login') }}"
-                   class="px-4 py-2 rounded-full border border-emerald-400 text-sm font-medium hover:bg-emerald-400 hover:text-slate-950 transition">
-                    Iniciar Sesión
-                </a>
-                <a href="{{ route('register') }}"
-                   class="px-4 py-2 rounded-full bg-fuchsia-500 text-sm font-semibold text-slate-950 hover:bg-fuchsia-400 shadow-lg shadow-fuchsia-500/40 transition">
-                    Registrarse
-                </a>
+                @if(!Auth::check())
+                    <a href="{{ route('login') }}"
+                       class="px-4 py-2 rounded-full border border-emerald-400 text-sm font-medium hover:bg-emerald-400 hover:text-slate-950 transition">
+                        Iniciar Sesión
+                    </a>
+                    <a href="{{ route('register') }}"
+                       class="px-4 py-2 rounded-full bg-fuchsia-500 text-sm font-semibold text-slate-950 hover:bg-fuchsia-400 shadow-lg shadow-fuchsia-500/40 transition">
+                        Registrarse
+                    </a>
+                @else
+                    <details class="relative group">
+                        <summary class="list-none cursor-pointer px-4 py-2 rounded-full border border-emerald-400 text-sm font-medium hover:bg-emerald-400 hover:text-slate-950 transition flex items-center gap-2">
+                            <span>{{ Auth::user()->name }}</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-emerald-400 border border-slate-700">{{ session('api_user_role') }}</span>
+                        </summary>
+                        <div class="absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-700 rounded-lg shadow-lg p-2 flex flex-col text-sm">
+                            <a href="{{ route('password.change') }}" class="px-3 py-2 rounded hover:bg-slate-800">Cambiar contraseña</a>
+                            <form method="POST" action="{{ route('logout') }}" class="m-0 p-0">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-3 py-2 rounded hover:bg-slate-800">Cerrar sesión</button>
+                            </form>
+                        </div>
+                    </details>
+                @endif
             </div>
 
             {{-- Hamburguesa móvil (solo maquetada, sin JS aún) --}}
@@ -73,15 +89,18 @@
 
                 <div class="flex flex-wrap gap-4 pt-2">
                     <a href="#productos"
-                       class="px-6 py-3 rounded-full bg-emerald-500 text-slate-950 font-semibold text-sm md:text-base
-                              hover:bg-emerald-400 shadow-lg shadow-emerald-500/40 transition">
+                       class="px-6 py-3 rounded-full bg-emerald-500 text-slate-950 font-semibold text-sm md:text-base hover:bg-emerald-400 shadow-lg shadow-emerald-500/40 transition">
                         Ver Productos
                     </a>
                     <a href="#contacto"
-                       class="px-6 py-3 rounded-full border border-slate-500 text-sm md:text-base font-medium
-                              hover:border-emerald-400 hover:text-emerald-400 transition">
+                       class="px-6 py-3 rounded-full border border-slate-500 text-sm md:text-base font-medium hover:border-emerald-400 hover:text-emerald-400 transition">
                         Solicitar Cotización
                     </a>
+                    @if(Auth::check())
+                        <a href="{{ route('external.products.index') }}" class="px-6 py-3 rounded-full border border-emerald-500 text-sm md:text-base font-medium hover:bg-emerald-500 hover:text-slate-950 transition">
+                            Productos API
+                        </a>
+                    @endif
                 </div>
 
                 <div class="pt-4 text-xs md:text-sm text-slate-400">

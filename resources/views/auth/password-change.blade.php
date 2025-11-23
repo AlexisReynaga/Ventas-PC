@@ -35,6 +35,6 @@
             <button type="submit">Guardar</button>
         </div>
     </form>
-    <p><a href="{{ route('site.home') }}">Volver al inicio</a></p>
+    <p><a href="{{ route('home') }}">Volver al inicio</a></p>
 </body>
 </html>

@@ -92,6 +92,6 @@ class AuthApiController extends Controller
 
         Auth::login($local, true);
 
-        return redirect()->intended(route('site.home'));
+        return redirect()->intended(route('home'));
     }
 }

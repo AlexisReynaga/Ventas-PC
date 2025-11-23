@@ -73,7 +73,7 @@ return [
     |
     */
 
-    'home' => '/home-page',
+    'home' => '/',
 
     /*
     |--------------------------------------------------------------------------
@@ -144,9 +144,14 @@ return [
     */
 
     'features' => [
-        // Todo el ciclo de vida de autenticación (registro, reset, verificación, 2FA)
-        // se delega a la API. Aquí solo mantenemos login de sesión.
-        // Sin Features locales activas.
+        Features::registration(),
+        Features::resetPasswords(),
+        Features::emailVerification(),
+        Features::twoFactorAuthentication([
+            'confirm' => true,
+            'confirmPassword' => true,
+            // 'window' => 0,
+        ]),
     ],
 
 ];

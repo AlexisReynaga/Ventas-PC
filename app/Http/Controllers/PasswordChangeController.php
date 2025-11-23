@@ -41,6 +41,6 @@ class PasswordChangeController extends Controller
             return back()->withErrors(['current_password' => $message])->withInput();
         }
 
-        return redirect()->route('site.home')->with('status', 'Contraseña actualizada');
+        return redirect()->route('home')->with('status', 'Contraseña actualizada');
     }
 }
