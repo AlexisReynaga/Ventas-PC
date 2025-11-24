@@ -46,21 +46,7 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col relative">
 
-    <nav class="border-b border-gray-800 bg-dark/95 backdrop-blur sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded border border-primary flex items-center justify-center text-primary font-bold shadow-neon">V</div>
-                    <span class="font-bold text-xl tracking-wide text-white">Valenzo's <span class="text-primary">PC</span></span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('home') }}" class="text-sm text-gray-400 hover:text-white transition-colors">Ir a Tienda</a>
-                    <div class="h-4 w-px bg-gray-700"></div>
-                    <span class="text-xs font-mono text-primary bg-primary/10 px-2 py-1 rounded">ADMIN</span>
-                </div>
-            </div>
-        </div>
-    </nav>
+<x-navbar />
 
     <main class="flex-grow p-6 max-w-[1400px] mx-auto w-full">
         
@@ -180,7 +166,7 @@
                                         data-image="{{ $p['image_url'] ?? '' }}"
                                         data-description="{{ $p['description'] ?? '' }}"
                                         data-action="{{ route('productos.admin.update', $p['id']) }}"
-                                        class="p-2 rounded-lg hover:bg-blue-500/20 text-gray-500 hover:text-blue-400 transition-colors" title="Editar">
+                                        class="p-2 rounded-lg hover:bg-blue-500/20 text-gray-500 hover:text-emerald-400 transition-colors" title="Editar">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                     </button>
 
@@ -314,7 +300,7 @@
                     </div>
                     <div class="mt-6 flex justify-end gap-3">
                         <button type="button" onclick="closeModal('editModal')" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white text-sm transition">Cancelar</button>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow-lg text-sm transition">Actualizar</button>
+                        <button type="submit" class="bg-emerald-400 hover:bg-emerald-500 text-white font-bold px-6 py-2 rounded-lg shadow-lg text-sm transition">Actualizar</button>
                     </div>
                 </form>
             </div>

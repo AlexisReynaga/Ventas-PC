@@ -61,77 +61,7 @@
 <body class="antialiased min-h-screen flex flex-col">
 
     <!-- NAVBAR (Consistente con Productos) -->
-    <nav class="border-b border-white/5 bg-dark/90 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-6 border-2 border-primary rounded-sm flex items-center justify-center">
-                        <div class="w-full h-0.5 bg-primary"></div>
-                    </div>
-                    <span class="font-bold text-xl tracking-wider text-white">Valenzo's <span class="font-light text-gray-400">PC</span></span>
-                </div>
-
-                <div class="hidden md:flex gap-8 text-sm font-medium text-gray-300">
-                    <a href="{{ route('home') }}" class="hover:text-primary transition-colors">Inicio</a>
-                    <a href="{{ route('productos.index') }}" class="hover:text-primary transition-colors">Productos</a>
-                    <a href="{{ route('servicios.index') }}" class="text-primary relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-0.5 after:bg-primary">Servicios</a>
-                    @if(Auth::check() && session('api_user_role') === 'admin')
-                        <a href="{{ route('admin.users') }}" class="hover:text-primary transition-colors">Usuarios</a>
-                    @endif
-                </div>
-
-                <!-- Usuario / Login -->
-                <div class="flex items-center gap-6">
-                    <!-- Icono "Cita/Carrito" -->
-                    <button class="relative p-2 text-gray-400 hover:text-white transition group" title="Mis Citas">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        <span id="cart-badge" class="absolute top-1 right-0 w-4 h-4 bg-primary text-dark text-[10px] font-bold rounded-full flex items-center justify-center opacity-0 transition-opacity">0</span>
-                    </button>
-                    
-                    @if(!Auth::check())
-                        <div class="flex items-center gap-4">
-                            <a href="{{ route('login') }}" class="text-sm font-bold text-gray-400 hover:text-white">Login</a>
-                            <a href="{{ route('register') }}" class="px-4 py-2 rounded-lg bg-primary hover:bg-primaryDark text-dark text-xs font-bold transition-all">Registro</a>
-                        </div>
-                    @else
-                        <div class="relative group">
-                            <button class="flex items-center gap-3 focus:outline-none">
-                                <div class="text-right hidden lg:block">
-                                    <div class="text-sm font-bold text-white leading-none">{{ Auth::user()->name }}</div>
-                                    <div class="text-[10px] font-mono text-primary uppercase tracking-wider bg-primary/10 px-1.5 rounded inline-block mt-1">
-                                        {{ session('api_user_role') ?? 'Cliente' }}
-                                    </div>
-                                </div>
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600 flex items-center justify-center text-white font-bold shadow-lg hover:border-primary transition-colors">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
-                                </div>
-                            </button>
-                            <!-- Dropdown -->
-                            <div class="absolute right-0 mt-2 w-48 bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden hidden group-hover:block dropdown-enter pt-1">
-                                @if(session('api_user_role') === 'admin')
-                                    <a href="{{ route('servicios.admin') }}" class="block px-4 py-3 text-sm text-primary hover:bg-gray-800 transition-colors font-bold border-b border-gray-800">
-                                        Admin Servicios
-                                    </a>
-                                @endif
-                                <a href="{{ route('password.change') }}" class="block px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
-                                    Cambiar Contraseña
-                                </a>
-                                <div class="border-t border-gray-800">
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors">
-                                            Cerrar Sesión
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </nav>
+<x-navbar />
 
     <!-- Header -->
     <div class="bg-gradient-to-b from-card to-dark py-12 border-b border-white/5">
