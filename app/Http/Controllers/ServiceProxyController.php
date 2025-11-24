@@ -15,18 +15,52 @@ class ServiceProxyController extends Controller
         $this->client = $client;
     }
 
+    // LISTADO PÚBLICO (CLIENTE)
     public function index(Request $request)
     {
-        $filters = $request->only(['search','status','sort','direction','per_page']);
+        // 1. Filtros permitidos en la vista pública
+        $filters = $request->only(['search','status','sort','direction','per_page','page','type','min_price','max_price']);
+        
+        // Estructura por defecto
+        $services = [
+            'items' => [],
+            'current_page' => 1,
+            'last_page' => 1,
+            'total' => 0
+        ];
+
         try {
-            $data = $this->client->services(array_filter($filters, fn ($v) => $v !== null && $v !== ''));
-            return response()->json($data, 200);
+            // 2. Consumo de API
+            // Forzamos status 'active' para que los clientes no vean servicios inactivos, a menos que se filtre distinto
+            if (!$request->has('status')) {
+                $filters['status'] = 'active';
+            }
+
+            $raw = $this->client->services(array_filter($filters, fn ($v) => $v !== null && $v !== ''));
+            
+            // 3. Normalización de datos (igual que en Productos)
+            $items = $raw['data'] ?? $raw['items'] ?? (is_array($raw) && isset($raw[0]) ? $raw : []);
+            
+            $pagination = [
+                'current_page' => $raw['current_page'] ?? ($raw['meta']['current_page'] ?? 1),
+                'last_page'    => $raw['last_page'] ?? ($raw['meta']['last_page'] ?? 1),
+                'per_page'     => $raw['per_page'] ?? ($raw['meta']['per_page'] ?? count($items)),
+                'total'        => $raw['total'] ?? ($raw['meta']['total'] ?? count($items)),
+            ];
+
+            $services = ['items' => $items] + $pagination;
+
         } catch (\Throwable $e) {
             Log::error('Error listando servicios API', ['error' => $e->getMessage()]);
-            return response()->json(['error' => 'Fallo al listar servicios'], 502);
+            // En caso de error, la vista recibirá un array vacío con mensaje opcional
+            $services['error'] = 'No se pudo cargar el catálogo de servicios.';
         }
+
+        // 4. Retornar la vista Blade
+        return view('servicios.userservicios', compact('services'));
     }
 
+    // DETALLE SERVICIO (JSON - Podrías hacer una vista individual si quisieras luego)
     public function show(int $id)
     {
         try {
@@ -37,6 +71,8 @@ class ServiceProxyController extends Controller
             return response()->json(['error' => 'Servicio no encontrado'], $status);
         }
     }
+
+    // --- MÉTODOS ADMIN (API) ---
 
     public function store(Request $request)
     {
@@ -92,6 +128,8 @@ class ServiceProxyController extends Controller
     {
         return session('api_user_role') === 'admin';
     }
+
+    // --- VISTAS ADMIN ---
 
     public function admin(Request $request)
     {

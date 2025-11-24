@@ -178,4 +178,40 @@ class ProductProxyController extends Controller
             return redirect()->route('productos.admin')->withErrors(['delete' => 'Error: '.$e->getMessage()]);
         }
     }
+    public function catalogo(Request $request)
+    {
+        // 1. Recogemos los filtros de la URL (igual que en tu vista blade)
+        $filters = $request->only([
+            'search','category','min_price','max_price','sort','direction','page'
+        ]);
+
+        // 2. Preparamos estructura vacía por si falla la API
+        $products = [
+            'items' => [],
+            'current_page' => 1,
+            'last_page' => 1
+        ];
+
+        try {
+            // 3. Llamamos a tu cliente API (reutilizando tu lógica existente)
+            $raw = $this->client->products(array_filter($filters, fn ($v) => $v !== null && $v !== ''));
+            
+            // 4. Normalizamos los datos (igual que hiciste en el admin)
+            $items = $raw['data'] ?? $raw['items'] ?? (is_array($raw) && isset($raw[0]) ? $raw : []);
+            
+            $products = [
+                'items' => $items,
+                'current_page' => $raw['current_page'] ?? ($raw['meta']['current_page'] ?? 1),
+                'last_page'    => $raw['last_page'] ?? ($raw['meta']['last_page'] ?? 1),
+                'total'        => $raw['total'] ?? ($raw['meta']['total'] ?? count($items)),
+            ];
+
+        } catch (\Throwable $e) {
+            // Si falla, mandamos lista vacía pero no rompemos la página
+            Log::error('Error cargando catálogo', ['e' => $e->getMessage()]);
+        }
+
+        // 5. IMPORTANTE: Aquí conectamos con tu archivo resources/views/products/userproduct.blade.php
+        return view('productos.userproduct', compact('products'));
+    }
 }

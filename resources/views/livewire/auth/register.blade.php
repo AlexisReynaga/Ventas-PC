@@ -1,49 +1,159 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro</title>
+    <title>Registro | Valenzo's PC</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <style>body{font-family:sans-serif;max-width:420px;margin:40px auto;padding:0 16px}</style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0B0E14',
+                        card: '#151A23',
+                        primary: '#00D68F',
+                        primaryDark: '#00b87a',
+                    },
+                    boxShadow: {
+                        'neon': '0 0 20px rgba(0, 214, 143, 0.4)',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0B0E14; font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(21, 26, 35, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-input {
+            background: rgba(11, 14, 20, 0.6);
+            border: 1px solid #334155;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            border-color: #00D68F;
+            background: rgba(11, 14, 20, 0.9);
+            box-shadow: 0 0 15px rgba(0, 214, 143, 0.1);
+            outline: none;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <h1>Crear cuenta</h1>
+<body class="min-h-screen flex items-center justify-center relative overflow-hidden py-10">
 
-    @if ($errors->any())
-        <div>
-            <strong>Errores:</strong>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    <!-- Fondo decorativo -->
+    <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-    <form method="POST" action="{{ route('register.store') }}">
-        @csrf
-        <div>
-            <label for="name">Nombre</label>
-            <input id="name" name="name" type="text" required autofocus autocomplete="name" value="{{ old('name') }}" />
+    <div class="w-full max-w-lg px-4 animate-fade-in relative z-10">
+        
+        <div class="text-center mb-6">
+            <a href="{{ route('home') }}" class="inline-flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded border border-primary flex items-center justify-center text-primary font-bold shadow-neon group-hover:scale-105 transition-transform">V</div>
+                <span class="font-bold text-2xl tracking-wide text-white">Valenzo's <span class="text-primary">PC</span></span>
+            </a>
         </div>
-        <div>
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" required autocomplete="email" value="{{ old('email') }}" />
-        </div>
-        <div>
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password" required autocomplete="new-password" />
-        </div>
-        <div>
-            <label for="password_confirmation">Confirmar Password</label>
-            <input id="password_confirmation" name="password_confirmation" type="password" required autocomplete="new-password" />
-        </div>
-        <div>
-            <button type="submit">Crear cuenta</button>
-        </div>
-    </form>
 
-    <p>¿Ya tienes cuenta? <a href="{{ route('login') }}">Inicia sesión</a></p>
+        <div class="glass-card rounded-2xl p-8 shadow-2xl">
+            <h2 class="text-2xl font-bold text-white mb-2 text-center">Crear Cuenta</h2>
+            <p class="text-gray-400 text-sm text-center mb-8">Únete para gestionar tus compras y citas</p>
+
+            @if ($errors->any())
+                <div class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('register') }}" class="space-y-5">
+                @csrf
+                
+                <!-- Nombre -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-400 mb-1.5 ml-1">Nombre Completo</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                        <input id="name" name="name" type="text" required autofocus autocomplete="name" value="{{ old('name') }}"
+                            class="glass-input w-full pl-10 pr-4 py-3 rounded-xl text-sm placeholder-gray-600 focus:ring-0" 
+                            placeholder="John Doe" />
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-400 mb-1.5 ml-1">Correo Electrónico</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path></svg>
+                        </div>
+                        <input id="email" name="email" type="email" required autocomplete="email" value="{{ old('email') }}"
+                            class="glass-input w-full pl-10 pr-4 py-3 rounded-xl text-sm placeholder-gray-600 focus:ring-0" 
+                            placeholder="tu@email.com" />
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-400 mb-1.5 ml-1">Contraseña</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        </div>
+                        <input id="password" name="password" type="password" required autocomplete="new-password"
+                            class="glass-input w-full pl-10 pr-4 py-3 rounded-xl text-sm placeholder-gray-600 focus:ring-0" 
+                            placeholder="Mínimo 8 caracteres" />
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-400 mb-1.5 ml-1">Confirmar Contraseña</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <input id="password_confirmation" name="password_confirmation" type="password" required autocomplete="new-password"
+                            class="glass-input w-full pl-10 pr-4 py-3 rounded-xl text-sm placeholder-gray-600 focus:ring-0" 
+                            placeholder="Repite tu contraseña" />
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-dark font-bold py-3.5 rounded-xl shadow-neon transition-all hover:-translate-y-0.5 active:translate-y-0 text-sm uppercase tracking-wide">
+                        Registrarse
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-8 text-center border-t border-gray-800 pt-6">
+                <p class="text-gray-400 text-sm">
+                    ¿Ya tienes una cuenta? 
+                    <a href="{{ route('login') }}" class="text-white font-semibold hover:text-primary transition-colors ml-1">
+                        Inicia Sesión
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

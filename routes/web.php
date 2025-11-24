@@ -17,8 +17,7 @@ Route::get('external/products', [\App\Http\Controllers\ExternalProductsControlle
     ->name('external.products.index');
 
 // Productos proxy API
-Route::get('productos', [ProductProxyController::class, 'index'])->name('productos.index');
-Route::get('productos/{id}', [ProductProxyController::class, 'show'])->whereNumber('id')->name('productos.show');
+Route::get('productos', [ProductProxyController::class, 'catalogo'])->name('productos.index');Route::get('productos/{id}', [ProductProxyController::class, 'show'])->whereNumber('id')->name('productos.show');
 Route::post('productos', [ProductProxyController::class, 'store'])->middleware(['auth','admin'])->name('productos.store');
 Route::put('productos/{id}', [ProductProxyController::class, 'update'])->middleware(['auth','admin'])->whereNumber('id')->name('productos.update');
 Route::delete('productos/{id}', [ProductProxyController::class, 'destroy'])->middleware(['auth','admin'])->whereNumber('id')->name('productos.destroy');
