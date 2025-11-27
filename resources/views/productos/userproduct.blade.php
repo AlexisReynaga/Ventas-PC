@@ -100,10 +100,13 @@
                                 <label class="text-xs font-bold text-primary uppercase tracking-wider mb-2 block">Categoría</label>
                                 <select name="category" class="filter-input w-full p-2.5 rounded-lg text-sm">
                                     <option value="">Todas</option>
-                                    <option value="Laptops" @selected(request('category') == 'Laptops')>Laptops</option>
-                                    <option value="PC" @selected(request('category') == 'PC')>PC Escritorio</option>
-                                    <option value="Componentes" @selected(request('category') == 'Componentes')>Componentes</option>
-                                    <option value="Perifericos" @selected(request('category') == 'Perifericos')>Periféricos</option>
+                                    @php($cats = $categories ?? [])
+                                    @foreach($cats as $cat)
+                                        <option value="{{ $cat }}" @selected(request('category') == $cat)>{{ $cat }}</option>
+                                    @endforeach
+                                    @if(request('category') && !in_array(request('category'), $cats ?? []))
+                                        <option value="{{ request('category') }}" selected>{{ request('category') }}</option>
+                                    @endif
                                 </select>
                             </div>
 

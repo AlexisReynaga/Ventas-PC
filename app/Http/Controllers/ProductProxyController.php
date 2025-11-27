@@ -182,8 +182,12 @@ class ProductProxyController extends Controller
     {
         // 1. Recogemos los filtros de la URL (igual que en tu vista blade)
         $filters = $request->only([
-            'search','category','min_price','max_price','sort','direction','page'
+            'search','category','min_price','max_price','sort','direction','page','status'
         ]);
+        // Por defecto mostrar solo activos para clientes/invitados
+        if (!$request->has('status')) {
+            $filters['status'] = 'active';
+        }
 
         // 2. Preparamos estructura vacía por si falla la API
         $products = [
@@ -191,6 +195,7 @@ class ProductProxyController extends Controller
             'current_page' => 1,
             'last_page' => 1
         ];
+        $categories = [];
 
         try {
             // 3. Llamamos a tu cliente API (reutilizando tu lógica existente)
@@ -206,12 +211,32 @@ class ProductProxyController extends Controller
                 'total'        => $raw['total'] ?? ($raw['meta']['total'] ?? count($items)),
             ];
 
+            // Construir lista de categorías desde los items actuales
+            $categories = array_values(array_unique(array_filter(array_map(function ($it) {
+                return $it['category'] ?? null;
+            }, $items))));
+
+            // Intentar ampliar categorías con una consulta más amplia (fallback silencioso)
+            try {
+                $catRaw = $this->client->products(array_filter([
+                    'status' => $filters['status'] ?? 'active',
+                    'per_page' => 200,
+                ], fn ($v) => $v !== null && $v !== ''));
+                $catItems = $catRaw['data'] ?? $catRaw['items'] ?? (is_array($catRaw) && isset($catRaw[0]) ? $catRaw : []);
+                $moreCats = array_values(array_unique(array_filter(array_map(function ($it) {
+                    return $it['category'] ?? null;
+                }, $catItems))));
+                $categories = array_values(array_unique(array_merge($categories, $moreCats)));
+            } catch (\Throwable $e) {
+                // ignorar, nos quedamos con las categorías de la página actual
+            }
+
         } catch (\Throwable $e) {
             // Si falla, mandamos lista vacía pero no rompemos la página
             Log::error('Error cargando catálogo', ['e' => $e->getMessage()]);
         }
 
-        // 5. IMPORTANTE: Aquí conectamos con tu archivo resources/views/products/userproduct.blade.php
-        return view('productos.userproduct', compact('products'));
+        // 5. Pasar también categorías para el filtro dinámico
+        return view('productos.userproduct', compact('products','categories'));
     }
 }
