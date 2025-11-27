@@ -54,6 +54,19 @@
 
             {{-- Zona Usuario (Derecha) --}}
             <div class="hidden md:flex items-center gap-4 h-full">
+                @php($cart = session('cart', ['products'=>[], 'services'=>[], 'total'=>0]))
+                @php($cartCount = count($cart['products']) + count($cart['services']))
+                @php($isAdmin = Auth::check() && session('api_user_role')==='admin')
+
+                {{-- Icono Carrito (solo invitados o usuarios no admin) --}}
+                @if(!$isAdmin)
+                    <a href="{{ route('carrito.index') }}" class="relative group flex items-center justify-center w-11 h-11 rounded-lg bg-gray-800/60 hover:bg-gray-700 transition-colors border border-gray-700 hover:border-emerald-500/50">
+                        <svg class="w-6 h-6 text-gray-300 group-hover:text-emerald-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        <span id="cart-badge" class="absolute -top-1 -right-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-[#0B0E14] {{ $cartCount ? '' : 'opacity-0' }} shadow">{{ $cartCount }}</span>
+                        <span class="sr-only">Ver Carrito</span>
+                    </a>
+                @endif
+
                 @if(!Auth::check())
                     {{-- NO LOGUEADO --}}
                     <div class="flex items-center gap-4">
@@ -66,7 +79,6 @@
                     </div>
                 @else
                     {{-- LOGUEADO --}}
-                    {{-- IMPORTANTE: h-full aquí asegura que el área vertical cubra todo el navbar --}}
                     <div class="relative group h-full flex items-center">
                         <button class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-white/10 focus:outline-none">
                             <div class="text-right hidden lg:block">
@@ -78,29 +90,23 @@
                             <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600 flex items-center justify-center text-white font-bold shadow-lg">
                                 {{ substr(Auth::user()->name, 0, 1) }}
                             </div>
-                            <svg class="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            <svg class="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
-
-                        {{-- Dropdown Menú --}}
-                        {{-- CORRECCIÓN AQUÍ: 'top-full' lo pega al borde inferior y 'pt-2' crea un padding invisible --}}
                         <div class="absolute right-0 top-full pt-2 w-56 hidden group-hover:block">
                             <div class="bg-[#151A23] border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-[slideDown_0.2s_ease-out_forwards]">
-                                
                                 <div class="px-4 py-3 border-b border-gray-800 lg:hidden">
                                     <p class="text-sm text-white font-bold">{{ Auth::user()->name }}</p>
                                     <p class="text-xs text-emerald-400">{{ session('api_user_role') }}</p>
                                 </div>
-                                
                                 <a href="{{ route('password.change') }}" class="block px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 hover:text-emerald-400 transition-colors flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11.536 11l-4.414 2.207a1 1 0 00-.207.272L6 16l2 2-2.5 1.5L5 21a1 1 0 00.491.868L8 19l2 2 3.5-2 1.5-2.5a1 1 0 00.272-.207l2.207-4.414A6 6 0 0121 9z"></path></svg>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11.536 11l-4.414 2.207a1 1 0 00-.207.272L6 16l2 2-2.5 1.5L5 21a1 1 0 00.491.868L8 19l2 2 3.5-2 1.5-2.5a1 1 0 00.272-.207l2.207-4.414A6 6 0 0121 9z"/></svg>
                                     Cambiar Contraseña
                                 </a>
-
                                 <div class="border-t border-gray-800">
                                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                                         @csrf
                                         <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors flex items-center gap-2">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                             Cerrar Sesión
                                         </button>
                                     </form>
@@ -133,6 +139,14 @@
             @else
                 <a href="{{ route('productos.index') }}" class="block px-3 py-2 rounded-md {{ request()->routeIs('productos.index') ? 'text-white bg-gray-800' : 'text-gray-300' }}">Catálogo</a>
                 <a href="{{ route('servicios.index') }}" class="block px-3 py-2 rounded-md {{ request()->routeIs('servicios.index') ? 'text-white bg-gray-800' : 'text-gray-300' }}">Servicios</a>
+            @endif
+            @php($cart = session('cart', ['products'=>[], 'services'=>[], 'total'=>0]))
+            @php($cartCount = count($cart['products']) + count($cart['services']))
+            @php($isAdmin = Auth::check() && session('api_user_role')==='admin')
+            @if(!$isAdmin)
+                <a href="{{ route('carrito.index') }}" class="block px-3 py-2 rounded-md {{ request()->routeIs('carrito.index') ? 'text-white bg-gray-800' : 'text-gray-300' }}">
+                    Carrito ({{ $cartCount }})
+                </a>
             @endif
 
             <div class="border-t border-gray-800 my-2 pt-2">

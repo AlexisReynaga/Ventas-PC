@@ -75,9 +75,6 @@
 
                 <div class="flex flex-wrap gap-4 pt-4">
                     @if($isAdmin)
-                         <a href="{{ route('productos.admin') }}" class="px-8 py-4 rounded-xl bg-primary hover:bg-primaryDark text-dark font-bold text-lg shadow-neon hover:shadow-glow transition-all transform hover:-translate-y-1">
-                            Gestionar Inventario
-                        </a>
                     @else
                         <a href="{{ route('productos.index') }}" class="px-8 py-4 rounded-xl bg-primary hover:bg-primaryDark text-dark font-bold text-lg shadow-neon hover:shadow-glow transition-all transform hover:-translate-y-1">
                             Ver Catálogo

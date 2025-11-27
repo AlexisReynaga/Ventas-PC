@@ -63,7 +63,6 @@
     <!-- NAVBAR (Consistente con Productos) -->
 <x-navbar />
 
-    <!-- Header -->
     <div class="bg-gradient-to-b from-card to-dark py-12 border-b border-white/5">
         <div class="max-w-[1400px] mx-auto px-4 text-center">
             <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
@@ -195,9 +194,9 @@
                                         @endif
                                     </span>
                                 </div>
-                                <button onclick="addToInquiry('{{ $s['name'] }}')" class="bg-gray-800 hover:bg-white text-white hover:text-dark px-4 py-2 rounded-lg font-bold text-sm transition-all shadow-lg group-hover:bg-primary group-hover:text-dark">
+                                <a href="{{ route('servicios.schedule.form', $s['id'] ?? 0) }}" class="bg-gray-800 hover:bg-white text-white hover:text-dark px-4 py-2 rounded-lg font-bold text-sm transition-all shadow-lg group-hover:bg-primary group-hover:text-dark">
                                     Agendar
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>

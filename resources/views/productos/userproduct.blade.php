@@ -2,6 +2,7 @@
 <html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo | Valenzo's PC</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -191,7 +192,7 @@
                                     <span class="text-2xl font-bold text-primary">${{ number_format($p['price'], 2) }}</span>
                                 </div>
                                 
-                                <button onclick="addToCart('{{ $p['name'] }}')" class="bg-gray-800 hover:bg-white text-white hover:text-dark w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:bg-primary group-hover:text-dark shadow-lg">
+                                <button type="button" onclick="addToCart({{ $p['id'] ?? 0 }}, '{{ addslashes($p['name'] ?? 'Producto') }}')" class="bg-gray-800 hover:bg-white text-white hover:text-dark w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:bg-primary group-hover:text-dark shadow-lg">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                 </button>
                             </div>
@@ -250,23 +251,38 @@
     </div>
 
     <script>
-        let cartCount = 0;
+        let cartCount = {{ count((session('cart.products') ?? [])) + count((session('cart.services') ?? [])) }};
 
-        function addToCart(productName) {
-            cartCount++;
-            const badge = document.getElementById('cart-badge');
-            badge.innerText = cartCount;
-            badge.classList.remove('opacity-0');
-            badge.classList.add('animate-cart-add');
-            setTimeout(() => badge.classList.remove('animate-cart-add'), 300);
-
+        async function addToCart(id, productName) {
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             const toast = document.getElementById('toast');
-            document.getElementById('toast-message').innerText = `${productName} se ha añadido.`;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+            try {
+                const base = '{{ url('carrito/agregar/producto') }}';
+                const res = await fetch(base + '/' + id, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!res.ok) throw new Error('Fallo al agregar');
+                const data = await res.json();
+                cartCount = (data.cart.products.length + data.cart.services.length);
+                const badge = document.getElementById('cart-badge');
+                if (badge) {
+                    badge.innerText = cartCount;
+                    badge.classList.remove('opacity-0');
+                    badge.classList.add('animate-cart-add');
+                    setTimeout(() => badge.classList.remove('animate-cart-add'), 300);
+                }
+                document.getElementById('toast-message').innerText = `${productName} agregado al carrito.`;
+                toast.classList.remove('translate-y-20','opacity-0');
+                setTimeout(() => toast.classList.add('translate-y-20','opacity-0'), 3000);
+            } catch (e) {
+                document.getElementById('toast-message').innerText = `Error: no se pudo agregar.`;
+                toast.classList.remove('translate-y-20','opacity-0');
+                setTimeout(() => toast.classList.add('translate-y-20','opacity-0'), 3000);
+            }
         }
     </script>
 </body>
