@@ -76,3 +76,4 @@ Route::post('servicios/{id}/agendar', [CartController::class, 'scheduleStore'])-
 // Compras admin
 Route::get('admin/compras', [PurchaseAdminController::class, 'index'])->middleware(['auth','admin'])->name('admin.compras');
 Route::get('admin/compras/{id}', [PurchaseAdminController::class, 'show'])->middleware(['auth','admin'])->whereNumber('id')->name('admin.compras.show');
+Route::get('admin/compras/{id}/ticket', [PurchaseAdminController::class, 'ticket'])->middleware(['auth','admin'])->whereNumber('id')->name('admin.compras.ticket');

@@ -32,8 +32,9 @@
                 <td class="p-3">{{ count($purchase->items['products'] ?? []) + count($purchase->items['services'] ?? []) }}</td>
                 <td class="p-3 font-semibold">${{ number_format($purchase->total,2) }}</td>
                 <td class="p-3 text-xs text-gray-400 whitespace-nowrap">{{ $purchase->created_at->format('Y-m-d H:i') }}</td>
-                <td class="p-3">
+                <td class="p-3 space-x-3">
                     <a href="{{ route('admin.compras.show', $purchase->id) }}" class="text-emerald-400 hover:underline">Ver</a>
+                    <a href="{{ route('admin.compras.ticket', $purchase->id) }}" class="text-cyan-400 hover:underline" title="Reimprimir Ticket">Ticket</a>
                 </td>
             </tr>
             @empty

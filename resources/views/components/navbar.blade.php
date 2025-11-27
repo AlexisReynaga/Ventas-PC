@@ -41,6 +41,9 @@
                     <a href="{{ route('admin.finanzas') }}" class="{{ request()->routeIs('admin.finanzas*') ? $active : $inactive }}">
                         Finanzas
                     </a>
+                    <a href="{{ route('admin.compras') }}" class="{{ request()->routeIs('admin.compras*') ? $active : $inactive }}">
+                        Historial Compras
+                    </a>
                 @else
                     {{-- Enlaces para CLIENTES / INVITADOS --}}
                     <a href="{{ route('productos.index') }}" class="{{ request()->routeIs('productos.index') ? $active : $inactive }}">
@@ -98,7 +101,7 @@
                                     <p class="text-sm text-white font-bold">{{ Auth::user()->name }}</p>
                                     <p class="text-xs text-emerald-400">{{ session('api_user_role') }}</p>
                                 </div>
-                                <a href="{{ route('password.change') }}" class="block px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 hover:text-emerald-400 transition-colors flex items-center gap-2">
+                                <a href="{{ route('password.change') }}" class="px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 hover:text-emerald-400 transition-colors flex items-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11.536 11l-4.414 2.207a1 1 0 00-.207.272L6 16l2 2-2.5 1.5L5 21a1 1 0 00.491.868L8 19l2 2 3.5-2 1.5-2.5a1 1 0 00.272-.207l2.207-4.414A6 6 0 0121 9z"/></svg>
                                     Cambiar Contraseña
                                 </a>
@@ -136,6 +139,7 @@
                 <a href="{{ route('servicios.admin') }}" class="block px-3 py-2 rounded-md {{ request()->routeIs('servicios.admin*') ? 'text-white bg-gray-800' : 'text-gray-300' }}">Servicios (Admin)</a>
                 <a href="{{ route('admin.users') }}" class="block px-3 py-2 rounded-md {{ request()->routeIs('admin.users*') ? 'text-white bg-gray-800' : 'text-gray-300' }}">Usuarios</a>
                 <a href="{{ route('admin.finanzas') }}" class="block px-3 py-2 rounded-md {{ request()->routeIs('admin.finanzas*') ? 'text-white bg-gray-800' : 'text-gray-300' }}">Finanzas</a>
+                <a href="{{ route('admin.compras') }}" class="block px-3 py-2 rounded-md {{ request()->routeIs('admin.compras*') ? 'text-white bg-gray-800' : 'text-gray-300' }}">Historial Compras</a>
             @else
                 <a href="{{ route('productos.index') }}" class="block px-3 py-2 rounded-md {{ request()->routeIs('productos.index') ? 'text-white bg-gray-800' : 'text-gray-300' }}">Catálogo</a>
                 <a href="{{ route('servicios.index') }}" class="block px-3 py-2 rounded-md {{ request()->routeIs('servicios.index') ? 'text-white bg-gray-800' : 'text-gray-300' }}">Servicios</a>

@@ -48,6 +48,7 @@ class ProductProxyController extends Controller
         $data = $request->validate([
             'name' => ['required','string','max:255'],
             'description' => ['nullable','string','max:1000'],
+            'cost_price' => ['required','numeric','min:0'],
             'price' => ['required','numeric','min:0'],
             'stock' => ['nullable','integer','min:0'],
             'category' => ['nullable','string','max:100'],
@@ -70,6 +71,7 @@ class ProductProxyController extends Controller
         $payload = $request->validate([
             'name' => ['sometimes','string','max:255'],
             'description' => ['sometimes','nullable','string','max:1000'],
+            'cost_price' => ['sometimes','numeric','min:0'],
             'price' => ['sometimes','numeric','min:0'],
             'stock' => ['sometimes','nullable','integer','min:0'],
             'category' => ['sometimes','nullable','string','max:100'],
@@ -136,6 +138,7 @@ class ProductProxyController extends Controller
         $data = $request->validate([
             'name' => ['required','string','max:255'],
             'description' => ['nullable','string','max:1000'],
+            'cost_price' => ['required','numeric','min:0'],
             'price' => ['required','numeric','min:0'],
             'stock' => ['nullable','integer','min:0'],
             'category' => ['nullable','string','max:100'],
@@ -155,6 +158,7 @@ class ProductProxyController extends Controller
         $payload = $request->validate([
             'name' => ['sometimes','string','max:255'],
             'description' => ['sometimes','nullable','string','max:1000'],
+            'cost_price' => ['sometimes','numeric','min:0'],
             'price' => ['sometimes','numeric','min:0'],
             'stock' => ['sometimes','nullable','integer','min:0'],
             'category' => ['sometimes','nullable','string','max:100'],

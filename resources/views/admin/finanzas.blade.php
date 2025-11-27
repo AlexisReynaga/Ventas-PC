@@ -51,7 +51,7 @@
                 <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 Panel Financiero
             </h1>
-            <p class="text-gray-400">Resumen global de valor de inventario y catálogo de servicios.</p>
+            <p class="text-gray-400">Resumen global: inventario (costo vs público), servicios y desempeño de ventas.</p>
         </div>
 
         <!-- SECCIÓN PRODUCTOS -->
@@ -63,19 +63,43 @@
                 </a>
             </div>
 
+            @if($productsSummary['costo_mayor_precio_count'] > 0)
+            <div class="mb-6 p-4 rounded-xl border border-red-500/30 bg-red-500/10 flex items-start gap-3">
+                <svg class="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M4.93 4.93l14.14 14.14M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
+                <div class="text-sm text-red-300">
+                    <strong>{{ $productsSummary['costo_mayor_precio_count'] }}</strong> producto(s) tienen <span class="font-semibold">costo mayor</span> al precio público. Revisa márgenes y ajusta precios o costos.
+                </div>
+            </div>
+            @endif
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Valor Inventario (Destacado) -->
+                <!-- Valor Inventario Público -->
                 <div class="stat-card rounded-2xl p-6 col-span-1 md:col-span-2 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-primary/20 transition-all"></div>
                     <div class="relative z-10">
-                        <p class="text-sm text-gray-400 uppercase tracking-wider font-bold mb-1">Valor Total Inventario</p>
-                        <h3 class="text-4xl font-black text-white tracking-tight">
-                            $ {{ number_format($productsSummary['valor_inventario'], 2) }}
+                        <p class="text-sm text-gray-400 uppercase tracking-wider font-bold mb-1">Valor Inventario Público</p>
+                        <h3 class="text-4xl font-black text-white tracking-tight mb-1">
+                            $ {{ number_format($productsSummary['valor_inventario_publico'], 2) }}
                         </h3>
-                        <p class="text-xs text-primary mt-2 flex items-center gap-1">
+                        <p class="text-xs text-primary mt-1 flex items-center gap-1">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                            Capital en mercancía
+                            Potencial de venta a precio público
                         </p>
+                        <div class="mt-4 grid grid-cols-3 gap-4 text-xs">
+                            <div class="flex flex-col">
+                                <span class="text-gray-400">Costo Base</span>
+                                <span class="font-semibold text-amber-300">$ {{ number_format($productsSummary['valor_inventario_costo'], 2) }}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-gray-400">Margen Potencial</span>
+                                <span class="font-semibold text-emerald-400">$ {{ number_format($productsSummary['margen_potencial_inventario'], 2) }}</span>
+                            </div>
+                            @php($invMarginPct = $productsSummary['valor_inventario_publico'] > 0 ? ($productsSummary['margen_potencial_inventario'] / $productsSummary['valor_inventario_publico']) * 100 : 0)
+                            <div class="flex flex-col">
+                                <span class="text-gray-400">% Margen</span>
+                                <span class="font-semibold text-cyan-300">{{ number_format($invMarginPct,2) }}%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -105,18 +129,17 @@
             </div>
             
             <!-- Barra de Activos -->
+            @php($totalP = (int)($productsSummary['total'] ?? 0))
+            @php($activeP = (int)($productsSummary['active'] ?? 0))
+            @php($safeTotal = $totalP > 0 ? $totalP : 1)
+            @php($percentP = $safeTotal > 0 ? ($activeP / $safeTotal) * 100 : 0)
             <div class="mt-6 bg-card border border-gray-800 rounded-xl p-4 flex items-center gap-4">
                 <span class="text-sm text-gray-400 whitespace-nowrap">Estado del Catálogo:</span>
                 <div class="flex-grow h-2 bg-gray-800 rounded-full overflow-hidden flex">
-                    @php
-                        $totalP = $productsSummary['total'] > 0 ? $productsSummary['total'] : 1;
-                        $activeP = $productsSummary['active'];
-                        $percentP = ($activeP / $totalP) * 100;
-                    @endphp
-                    <div class="h-full bg-primary shadow-neon" style="width: {{ $percentP }}%"></div>
+                    <div class="h-full bg-primary shadow-neon" style="width: {{ number_format($percentP,2,'.','') }}%"></div>
                 </div>
                 <span class="text-sm font-bold text-primary">{{ $activeP }} Activos</span>
-                <span class="text-sm text-gray-600">/ {{ $productsSummary['total'] }}</span>
+                <span class="text-sm text-gray-600">/ {{ $totalP }}</span>
             </div>
         </div>
 
@@ -168,6 +191,35 @@
                             Online
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN VENTAS -->
+        <div class="mt-12">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-white border-l-4 border-emerald-500 pl-3">Desempeño de Ventas</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="stat-card rounded-2xl p-6">
+                    <p class="text-xs text-gray-400 uppercase font-bold mb-1">Tickets Emitidos</p>
+                    <h3 class="text-3xl font-bold text-white">{{ $ventasSummary['tickets'] }}</h3>
+                    <p class="text-xs text-gray-500 mt-1">Compras registradas</p>
+                </div>
+                <div class="stat-card rounded-2xl p-6">
+                    <p class="text-xs text-gray-400 uppercase font-bold mb-1">Ingresos</p>
+                    <h3 class="text-3xl font-bold text-emerald-400">$ {{ number_format($ventasSummary['ingresos'],2) }}</h3>
+                    <p class="text-xs text-gray-500 mt-1">Total bruto (precio público)</p>
+                </div>
+                <div class="stat-card rounded-2xl p-6">
+                    <p class="text-xs text-gray-400 uppercase font-bold mb-1">Costo</p>
+                    <h3 class="text-3xl font-bold text-amber-300">$ {{ number_format($ventasSummary['costo'],2) }}</h3>
+                    <p class="text-xs text-gray-500 mt-1">Costo base productos</p>
+                </div>
+                <div class="stat-card rounded-2xl p-6">
+                    <p class="text-xs text-gray-400 uppercase font-bold mb-1">Profit</p>
+                    <h3 class="text-3xl font-bold text-cyan-300">$ {{ number_format($ventasSummary['profit'],2) }}</h3>
+                    <p class="text-xs text-gray-500 mt-1">Margen: {{ number_format($ventasSummary['margin_percent'],2) }}%</p>
                 </div>
             </div>
         </div>

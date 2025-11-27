@@ -56,6 +56,7 @@ class CartController extends Controller
                 $cart['products'][] = [
                     'id' => $item['id'] ?? $id,
                     'name' => $item['name'] ?? 'Producto',
+                    'cost_price' => $item['cost_price'] ?? 0,
                     'price' => $item['price'] ?? 0,
                     'quantity' => 1,
                 ];
@@ -185,6 +186,19 @@ class CartController extends Controller
         }
         $ticketId = uniqid('TCK-');
         // Persistencia de la compra
+        // Asegurar que cada producto tenga cost_price (fallback API si falta)
+        foreach ($cart['products'] as &$p) {
+            if (!isset($p['cost_price'])) {
+                try {
+                    $apiData = $this->client->product($p['id']);
+                    $apiItem = $apiData['data'] ?? $apiData;
+                    $p['cost_price'] = $apiItem['cost_price'] ?? 0;
+                } catch (\Throwable $e) {
+                    $p['cost_price'] = 0; // fallback
+                }
+            }
+        }
+        unset($p);
         $purchase = Purchase::create([
             'user_id' => Auth::id(),
             'ticket_id' => $ticketId,
