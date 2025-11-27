@@ -15,6 +15,6 @@
 <ul>@foreach($cart['services'] as $s)<li>{{ $s['name'] }} - {{ $s['price'] }}</li>@endforeach</ul>
 @endif
 <h2>Total: {{ $cart['total'] }}</h2>
-<form method="POST" action="{{ route('carrito.ticket') }}">@csrf <button type="submit">Generar Ticket</button></form>
+<form method="POST" action="{{ route('carrito.ticket') }}">@csrf <button type="submit">Generar Ticket (PDF)</button></form>
 </body>
 </html>

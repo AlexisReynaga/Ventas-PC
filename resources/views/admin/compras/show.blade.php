@@ -12,8 +12,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">Compra #{{ $purchase->id }}</h1>
         <div class="flex gap-3">
-            <a href="{{ route('admin.compras.ticket',$purchase->id) }}" class="px-4 py-2 rounded bg-cyan-500 hover:bg-cyan-600 text-[#0B0E14] font-semibold text-sm">Ver Ticket</a>
-            <button onclick="window.print()" class="px-4 py-2 rounded bg-emerald-500 hover:bg-emerald-600 text-[#0B0E14] font-semibold text-sm">Imprimir Detalle</button>
+            <a href="{{ route('admin.compras.ticket.pdf',$purchase->id) }}" class="px-4 py-2 rounded bg-emerald-500 hover:bg-emerald-600 text-[#0B0E14] font-semibold text-sm">Imprimir Ticket</a>
         </div>
     </div>
 
@@ -89,11 +88,6 @@
             @endforelse
         </tbody>
     </table>
-    </div>
-
-    <div class="flex justify-between items-center">
-        <a href="{{ route('admin.compras') }}" class="text-sm text-gray-400 hover:text-white">&larr; Volver al listado</a>
-        <a href="{{ route('admin.compras.ticket',$purchase->id) }}" class="text-sm text-cyan-400 hover:text-white" title="Reimprimir Ticket">Reimprimir Ticket</a>
     </div>
 </div>
 </body>

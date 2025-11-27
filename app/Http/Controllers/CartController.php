@@ -6,6 +6,7 @@ use App\Services\ExternalApi\ExternalApiClient;
 use Illuminate\Http\Request;
 use App\Models\Purchase;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
@@ -209,18 +210,32 @@ class CartController extends Controller
             'total' => $cart['total'],
             'status' => 'completed',
         ]);
+        session()->forget('cart');
         $ticket = [
-            'ticket_id' => $ticketId,
-            'fecha' => $purchase->created_at->toDateTimeString(),
+            'ticket_id' => $purchase->ticket_id,
+            'fecha' => $purchase->created_at->format('Y-m-d H:i:s'),
             'items' => $purchase->items,
             'total' => $purchase->total,
+            'user' => optional($purchase->user),
         ];
-        session(['last_ticket' => $ticket]);
-        session()->forget('cart');
-        if (request()->wantsJson()) {
-            return response()->json(['message' => 'Ticket generado', 'ticket' => $ticket]);
+        // Generar PDF directo (descarga) usando DOMPDF
+        $html = view('pdf.ticket', compact('ticket'))->render();
+        try {
+            $dompdf = new \Dompdf\Dompdf();
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+            $purchaseId = isset($purchase) ? $purchase->id : (isset($data['purchase']['id']) ? $data['purchase']['id'] : 'NA');
+            $dateStr = now()->format('Ymd');
+            $userSegment = Auth::check() ? Str::slug((Auth::user()->name ?? Auth::user()->email ?? 'usuario'), '_') : 'invitado';
+            $filename = "ticket_{$purchaseId}_{$dateStr}_{$userSegment}.pdf";
+
+            return response($dompdf->output(), 200)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename=' . $filename);
+        } catch (\Throwable $e) {
+            return redirect()->route('carrito.index')->withErrors(['pdf' => 'Error generando PDF']);
         }
-        return view('carrito.ticket', compact('ticket'));
     }
 
     // Formulario para agendar servicio (vista con fecha/hora)
