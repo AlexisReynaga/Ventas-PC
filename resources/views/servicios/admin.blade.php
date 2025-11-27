@@ -37,7 +37,6 @@
             outline: none;
             box-shadow: 0 0 0 1px rgba(0, 214, 143, 0.3);
         }
-        /* Ocultar scrollbar en modales */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -48,7 +47,6 @@
 <x-navbar />
     <main class="flex-grow p-6 max-w-[1400px] mx-auto w-full">
         
-        <!-- Header & Botón Crear -->
         <div class="flex flex-col sm:flex-row justify-between items-end mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-white mb-1">Servicios Técnicos</h1>
@@ -63,7 +61,6 @@
             @endif
         </div>
 
-        <!-- Alertas -->
         @if(session('status'))
             <div class="mb-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -78,7 +75,6 @@
             </div>
         @endif
 
-        <!-- Filtros -->
         <div class="bg-card rounded-xl border border-gray-800 p-4 mb-6">
             <form method="GET" action="{{ route('servicios.admin') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                 <input type="text" name="search" placeholder="Buscar servicio..." value="{{ request('search') }}" class="glass-input w-full p-2 rounded-lg text-sm">
@@ -215,7 +211,6 @@
                 </table>
             </div>
 
-            <!-- Pagination Footer -->
             <div class="bg-gray-900/40 px-6 py-4 border-t border-gray-800 flex justify-between items-center">
                 <span class="text-xs text-gray-500">Pág {{ $current }} de {{ $last }}</span>
                 <div class="flex gap-2">
@@ -232,7 +227,6 @@
 
     </main>
 
-    <!-- ================= MODAL CREAR ================= -->
     <div id="createModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('createModal')"></div>
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xl">
@@ -283,7 +277,6 @@
         </div>
     </div>
 
-    <!-- ================= MODAL EDITAR ================= -->
     <div id="editModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('editModal')"></div>
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xl">
@@ -333,7 +326,6 @@
         </div>
     </div>
 
-    <!-- Scripts Vanilla JS -->
     <script>
         function openModal(modalId) {
             document.getElementById(modalId).classList.remove('hidden');
@@ -354,13 +346,11 @@
             document.getElementById('edit_status').value = data.status;
             document.getElementById('edit_description').value = data.description;
 
-            // Actualizar action del formulario
             document.getElementById('editForm').action = data.action;
 
             openModal('editModal');
         }
 
-        // Cerrar con ESC
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape") {
                 closeModal('createModal');

@@ -36,7 +36,7 @@
             border: 1px solid #334155;
             color: white;
             transition: all 0.3s ease;
-            color-scheme: dark; /* Para que el calendario nativo sea oscuro */
+            color-scheme: dark; 
         }
         .glass-input:focus {
             border-color: #00D68F;
@@ -44,7 +44,6 @@
             box-shadow: 0 0 15px rgba(0, 214, 143, 0.1);
             outline: none;
         }
-        /* Icono de calendario blanco en inputs date/time */
         ::-webkit-calendar-picker-indicator {
             filter: invert(1);
             opacity: 0.6;
@@ -60,7 +59,6 @@
 
     <x-navbar />
 
-    <!-- Fondo decorativo -->
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
     <main class="flex-grow flex items-center justify-center p-6 relative z-10">
@@ -68,13 +66,11 @@
         <div class="glass-panel w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border-t-4 border-t-primary">
             
             <div class="p-8">
-                <!-- Header Card -->
                 <div class="text-center mb-8">
                     <h1 class="text-2xl font-bold text-white mb-2">Agendar Servicio</h1>
                     <p class="text-gray-400 text-sm">Selecciona la fecha ideal para atender tu equipo.</p>
                 </div>
 
-                <!-- Detalles del Servicio -->
                 <div class="bg-gray-800/50 rounded-xl p-4 mb-8 flex items-center justify-between border border-gray-700">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
@@ -91,12 +87,10 @@
                     </div>
                 </div>
 
-                <!-- Formulario -->
                 <form method="POST" action="{{ route('servicios.schedule.store', $service['id'] ?? 0) }}" class="space-y-6">
                     @csrf
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Fecha -->
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Fecha de Cita</label>
                             <div class="relative">
@@ -111,7 +105,6 @@
                             @enderror
                         </div>
 
-                        <!-- Hora -->
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Hora Preferida</label>
                             <div class="relative">

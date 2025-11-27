@@ -31,7 +31,6 @@
     </script>
     <style>
         body { background-color: #0B0E14; color: #e2e8f0; font-family: 'Inter', sans-serif; }
-        /* Animaciones */
         .dropdown-enter {
             animation: slideDown 0.2s ease-out forwards;
         }
@@ -39,7 +38,6 @@
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Transición suave para el slider */
         .slide-content {
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         }
@@ -50,18 +48,13 @@
 
     <x-navbar />
 
-    {{-- Definimos la variable isAdmin aquí para usarla en el Hero --}}
     @php($isAdmin = Auth::check() && session('api_user_role') === 'admin')
 
-    {{-- HERO SECTION MEJORADA --}}
     <section class="relative overflow-hidden bg-dark min-h-[calc(100vh-80px)] flex items-center">
-        <!-- Efectos de fondo -->
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/20 rounded-full blur-[120px] opacity-20 pointer-events-none"></div>
         
-        {{-- Agregado 'w-full' aquí para recuperar el ancho completo --}}
         <div class="w-full max-w-[1400px] mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row items-center gap-16 relative z-10">
             
-            {{-- Lado Izquierdo: Texto --}}
             <div class="w-full md:w-1/2 space-y-8">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/5 text-primary text-xs font-bold tracking-wider uppercase">
                     <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
@@ -104,15 +97,12 @@
                 </div>
             </div>
 
-            {{-- Lado Derecho: Carrusel Interactivo --}}
             <div class="w-full md:w-1/2 flex justify-center relative">
-                <!-- Marco decorativo -->
                 <div class="absolute inset-0 bg-gradient-to-r from-primary to-blue-500 rounded-[3rem] blur-3xl opacity-20 -z-10 transform rotate-6 scale-90"></div>
                 
                 <div class="bg-card/80 backdrop-blur-xl border border-white/10 p-2 rounded-[2.5rem] shadow-2xl w-full max-w-md transform rotate-[-3deg] hover:rotate-0 transition-transform duration-500">
                     <div class="bg-dark rounded-[2rem] overflow-hidden relative min-h-[400px] flex items-center justify-center border border-gray-800 group">
                         
-                        <!-- SLIDE 1: Gamer -->
                         <div id="slide-0" class="slide-content absolute inset-0 flex flex-col items-center justify-center p-8 opacity-100 pointer-events-auto">
                             <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-t from-gray-800 to-gray-700 flex items-center justify-center border-2 border-primary shadow-[0_0_30px_rgba(0,214,143,0.3)] transform group-hover:scale-110 transition-transform duration-500">
                                 <span class="text-5xl">🎮</span>
@@ -121,7 +111,6 @@
                             <p class="text-gray-400 text-sm text-center">Rendimiento extremo para tus juegos favoritos. FPS altos y gráficos ultra.</p>
                         </div>
 
-                        <!-- SLIDE 2: Workstation -->
                         <div id="slide-1" class="slide-content absolute inset-0 flex flex-col items-center justify-center p-8 opacity-0 pointer-events-none transform translate-x-10">
                             <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-t from-gray-800 to-gray-700 flex items-center justify-center border-2 border-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.3)] transform group-hover:scale-110 transition-transform duration-500">
                                 <span class="text-5xl">🚀</span>
@@ -130,7 +119,6 @@
                             <p class="text-gray-400 text-sm text-center">Potencia para renderizado, edición de video y diseño 3D profesional.</p>
                         </div>
 
-                        <!-- SLIDE 3: Streaming -->
                         <div id="slide-2" class="slide-content absolute inset-0 flex flex-col items-center justify-center p-8 opacity-0 pointer-events-none transform translate-x-10">
                             <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-t from-gray-800 to-gray-700 flex items-center justify-center border-2 border-purple-500 shadow-[0_0_30px_rgba(168,85,247,0.3)] transform group-hover:scale-110 transition-transform duration-500">
                                 <span class="text-5xl">🎙️</span>
@@ -139,7 +127,6 @@
                             <p class="text-gray-400 text-sm text-center">Transmite en alta calidad sin lag. Configuración optimizada para creadores.</p>
                         </div>
                         
-                        <!-- Controles (Dots) -->
                         <div class="absolute bottom-8 left-0 right-0 flex justify-center gap-3 z-20">
                             <button onclick="manualSlide(0)" id="dot-0" class="w-8 h-2 rounded-full bg-primary transition-all duration-300 hover:bg-white"></button>
                             <button onclick="manualSlide(1)" id="dot-1" class="w-2 h-2 rounded-full bg-gray-600 transition-all duration-300 hover:bg-white"></button>
@@ -153,7 +140,6 @@
         </div>
     </section>
 
-    <!-- Script para el Carrusel -->
     <script>
         let currentSlide = 0;
         const totalSlides = 3;
@@ -166,30 +152,25 @@
                 const dot = document.getElementById(`dot-${i}`);
                 
                 if (slide) {
-                    // Reset slide
                     slide.classList.remove('opacity-100', 'pointer-events-auto', 'translate-x-0');
                     slide.classList.add('opacity-0', 'pointer-events-none', 'translate-x-10'); // Efecto salida
                 }
                 
                 if (dot) {
-                    // Reset dot
                     dot.classList.remove('w-8', 'bg-primary');
                     dot.classList.add('w-2', 'bg-gray-600');
                 }
             }
 
-            // Mostrar actual
             const activeSlide = document.getElementById(`slide-${index}`);
             const activeDot = document.getElementById(`dot-${index}`);
 
             if (activeSlide) {
-                // Activar slide (quitar translación para que entre)
                 activeSlide.classList.remove('opacity-0', 'pointer-events-none', 'translate-x-10');
                 activeSlide.classList.add('opacity-100', 'pointer-events-auto', 'translate-x-0');
             }
 
             if (activeDot) {
-                // Activar dot (hacerlo largo y verde)
                 activeDot.classList.remove('w-2', 'bg-gray-600');
                 activeDot.classList.add('w-8', 'bg-primary');
             }
@@ -203,13 +184,13 @@
         }
 
         function manualSlide(index) {
-            clearInterval(slideInterval); // Detener auto-play al interactuar
+            clearInterval(slideInterval); 
             showSlide(index);
-            startAutoPlay(); // Reiniciar auto-play
+            startAutoPlay(); 
         }
 
         function startAutoPlay() {
-            slideInterval = setInterval(nextSlide, 4000); // Cambiar cada 4 segundos
+            slideInterval = setInterval(nextSlide, 4000); 
         }
 
         // Iniciar al cargar

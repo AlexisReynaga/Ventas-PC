@@ -42,12 +42,10 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col relative">
 
-    <!-- NAVBAR -->
 <x-navbar />
 
     <main class="flex-grow p-6 max-w-[1200px] mx-auto w-full">
         
-        <!-- Header & Botón Crear -->
         <div class="flex flex-col sm:flex-row justify-between items-end mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-white mb-1">Usuarios del Sistema</h1>
@@ -60,7 +58,6 @@
             </button>
         </div>
 
-        <!-- Alertas -->
         @if(session('status'))
             <div class="mb-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -75,7 +72,6 @@
             </div>
         @endif
 
-        <!-- Tabla de Usuarios -->
         <div class="bg-card rounded-xl border border-gray-800 overflow-hidden shadow-xl">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm text-gray-400">
@@ -90,7 +86,6 @@
                     <tbody class="divide-y divide-gray-800">
                         @forelse($users as $u)
                         <tr class="hover:bg-gray-800/40 transition-colors group">
-                            <!-- Info Usuario -->
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600 flex items-center justify-center text-white font-bold text-sm">
@@ -103,7 +98,6 @@
                                 </div>
                             </td>
 
-                            <!-- Rol -->
                             <td class="px-6 py-4">
                                 @if(($u['role'] ?? '') === 'admin')
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary border border-primary/20 uppercase tracking-wide">
@@ -117,12 +111,10 @@
                                 @endif
                             </td>
 
-                            <!-- ID -->
                             <td class="px-6 py-4 font-mono text-xs">
                                 <span class="bg-gray-900 px-2 py-1 rounded text-gray-500">ID: {{ $u['id'] ?? '-' }}</span>
                             </td>
 
-                            <!-- Acciones -->
                             <td class="px-6 py-4 text-right">
                                 <button 
                                     onclick="openRoleModal('{{ $u['id'] }}', '{{ $u['name'] }}', '{{ $u['role'] }}', '{{ route('admin.users.role', $u['id']) }}')"
@@ -148,7 +140,6 @@
         </div>
     </main>
 
-    <!-- ================= MODAL CREAR USUARIO ================= -->
     <div id="createModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('createModal')"></div>
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md">
@@ -190,7 +181,6 @@
         </div>
     </div>
 
-    <!-- ================= MODAL EDITAR ROL ================= -->
     <div id="roleModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('roleModal')"></div>
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-sm">
@@ -221,7 +211,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script>
         function openModal(modalId) {
             document.getElementById(modalId).classList.remove('hidden');

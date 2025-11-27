@@ -47,12 +47,10 @@
 
     <main class="flex-grow flex items-center justify-center p-6 relative overflow-hidden">
         
-        <!-- Luz de fondo decorativa -->
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div class="glass-receipt w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden relative z-10 animate-[fadeIn_0.5s_ease-out]">
             
-            <!-- Header del Recibo -->
             <div class="p-8 text-center border-b border-gray-800">
                 <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 text-primary">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -65,7 +63,6 @@
 
             <div class="p-8 space-y-6">
                 
-                <!-- Sección Productos -->
                 @if(!empty($cart['products']))
                 <div>
                     <h3 class="text-xs font-bold text-primary uppercase tracking-wider mb-3 flex items-center gap-2">
@@ -91,7 +88,6 @@
                     <div class="h-px bg-gray-800 dashed-line"></div>
                 @endif
 
-                <!-- Sección Servicios -->
                 @if(!empty($cart['services']))
                 <div>
                     <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3 flex items-center gap-2">
@@ -122,7 +118,6 @@
 
             </div>
 
-            <!-- Total y Acciones -->
             <div class="bg-gray-900/50 p-8 border-t border-gray-800">
                 <div class="flex justify-between items-end mb-8">
                     <span class="text-gray-400 font-medium">Total a Pagar</span>

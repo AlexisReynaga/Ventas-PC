@@ -13,10 +13,9 @@
             font-size: 13px;
             line-height: 1.5;
         }
-        /* Header */
         .header {
             width: 100%;
-            border-bottom: 2px solid #00D68F; /* Verde Valenzo */
+            border-bottom: 2px solid #00D68F; 
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
@@ -34,7 +33,6 @@
             color: #666;
         }
         
-        /* Detalles Cliente/Ticket */
         .details-box {
             width: 100%;
             margin-bottom: 30px;
@@ -63,7 +61,6 @@
             display: block;
         }
 
-        /* Tabla de Items */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -87,7 +84,6 @@
         .product-name { font-weight: bold; color: #000; }
         .product-cat { font-size: 10px; color: #888; display: block; }
 
-        /* Totales */
         .totals-section {
             width: 100%;
             margin-top: 20px;
@@ -109,7 +105,6 @@
             padding-top: 10px !important;
         }
 
-        /* Footer */
         .footer {
             position: fixed;
             bottom: 40px;
@@ -125,7 +120,6 @@
 </head>
 <body>
 
-    <!-- Header -->
     <table class="header">
         <tr>
             <td valign="top">
@@ -141,7 +135,6 @@
         </tr>
     </table>
 
-    <!-- Info Cliente y Ticket -->
     <div class="details-box">
         <div class="client-box">
             <span class="label">Cliente</span>
@@ -157,7 +150,6 @@
         <div style="clear: both;"></div>
     </div>
 
-    <!-- Tabla de Productos y Servicios -->
     <table>
         <thead>
             <tr>
@@ -170,7 +162,6 @@
         <tbody>
             @php($granTotal = 0)
 
-            {{-- PRODUCTOS --}}
             @if(!empty($ticket['items']['products']))
                 @foreach($ticket['items']['products'] as $p)
                     @php($sub = ($p['price'] ?? 0) * ($p['quantity'] ?? 1))
@@ -187,7 +178,6 @@
                 @endforeach
             @endif
 
-            {{-- SERVICIOS --}}
             @if(!empty($ticket['items']['services']))
                 @foreach($ticket['items']['services'] as $s)
                     @php($granTotal += ($s['price'] ?? 0))
@@ -205,7 +195,6 @@
                 @endforeach
             @endif
 
-            {{-- Relleno si está vacío (raro, pero posible) --}}
             @if(empty($ticket['items']['products']) && empty($ticket['items']['services']))
                 <tr>
                     <td colspan="4" style="text-align: center; padding: 20px;">No hay items en este ticket.</td>
@@ -214,7 +203,6 @@
         </tbody>
     </table>
 
-    <!-- Totales -->
     <div class="totals-section">
         <table class="totals-table">
             <tr>

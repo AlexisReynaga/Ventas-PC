@@ -45,7 +45,6 @@
 
     <main class="flex-grow p-6 max-w-7xl mx-auto w-full">
         
-        <!-- Header -->
         <div class="mb-10">
             <h1 class="text-3xl font-bold text-white mb-2 flex items-center gap-3">
                 <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -54,7 +53,6 @@
             <p class="text-gray-400">Resumen global: inventario (costo vs público), servicios y desempeño de ventas.</p>
         </div>
 
-        <!-- SECCIÓN PRODUCTOS -->
         <div class="mb-12">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-white border-l-4 border-primary pl-3">Inventario de Productos</h2>
@@ -73,7 +71,6 @@
             @endif
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Valor Inventario Público -->
                 <div class="stat-card rounded-2xl p-6 col-span-1 md:col-span-2 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-primary/20 transition-all"></div>
                     <div class="relative z-10">
@@ -103,7 +100,6 @@
                     </div>
                 </div>
 
-                <!-- Total Productos -->
                 <div class="stat-card rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
@@ -115,7 +111,6 @@
                     <p class="text-xs text-gray-500 mt-1">Productos registrados</p>
                 </div>
 
-                <!-- Stock Total -->
                 <div class="stat-card rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
@@ -128,7 +123,6 @@
                 </div>
             </div>
             
-            <!-- Barra de Activos -->
             @php($totalP = (int)($productsSummary['total'] ?? 0))
             @php($activeP = (int)($productsSummary['active'] ?? 0))
             @php($safeTotal = $totalP > 0 ? $totalP : 1)
@@ -143,7 +137,6 @@
             </div>
         </div>
 
-        <!-- SECCIÓN SERVICIOS -->
         <div>
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-white border-l-4 border-blue-500 pl-3">Servicios Ofrecidos</h2>
@@ -153,7 +146,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Valor Servicios (Suma precios base) -->
                 <div class="stat-card rounded-2xl p-6 relative overflow-hidden">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center text-white font-bold text-xl border border-gray-700">
@@ -166,7 +158,6 @@
                     </div>
                 </div>
 
-                <!-- Total Servicios -->
                 <div class="stat-card rounded-2xl p-6">
                     <div class="flex items-center justify-between">
                         <div>
@@ -179,7 +170,6 @@
                     </div>
                 </div>
 
-                <!-- Activos -->
                 <div class="stat-card rounded-2xl p-6">
                     <div class="flex items-center justify-between">
                         <div>
@@ -195,7 +185,6 @@
             </div>
         </div>
 
-        <!-- SECCIÓN VENTAS -->
         <div class="mt-12">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-white border-l-4 border-emerald-500 pl-3">Desempeño de Ventas</h2>

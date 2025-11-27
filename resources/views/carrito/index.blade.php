@@ -40,7 +40,6 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    <!-- Lógica JS del Carrito -->
     <script>
         function getCsrf() { return document.querySelector('meta[name="csrf-token"]').getAttribute('content'); }
         
@@ -157,7 +156,6 @@
 
     <main class="flex-grow p-6 max-w-[1400px] mx-auto w-full">
         
-        <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-white flex items-center gap-3">
                 <span class="bg-primary/20 p-2 rounded-lg text-primary">
@@ -176,7 +174,6 @@
 
         @php($cart = $cart ?? ['products'=>[], 'services'=>[], 'total'=>0])
 
-        <!-- EMPTY STATE -->
         <div id="empty-cart-msg" class="{{ ($cart['total'] > 0) ? 'hidden' : '' }} text-center py-20 bg-card rounded-2xl border border-dashed border-gray-800">
             <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg class="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
@@ -188,13 +185,10 @@
             </a>
         </div>
 
-        <!-- CONTENT GRID -->
         <div id="cart-content-grid" class="flex flex-col lg:flex-row gap-8 {{ ($cart['total'] <= 0) ? 'hidden' : '' }}">
             
-            <!-- LEFT COLUMN: ITEMS -->
             <div class="w-full lg:w-2/3 space-y-8">
                 
-                <!-- PRODUCTOS -->
                 @if(!empty($cart['products']))
                 <div>
                     <h2 class="text-lg font-bold text-gray-300 mb-4 flex items-center gap-2">
@@ -204,35 +198,29 @@
                     <div class="space-y-4" id="products-body">
                         @foreach($cart['products'] as $p)
                         <div id="row-product-{{ $p['id'] }}" class="glass-panel p-4 rounded-xl flex flex-col sm:flex-row items-center gap-4 group hover:border-primary/30 transition-colors">
-                            <!-- IMAGEN CON FALLBACK -->
                             <div class="w-20 h-20 bg-gray-800 rounded-lg flex-shrink-0 overflow-hidden border border-gray-700 relative">
                                 @if(!empty($p['image_url']))
                                     <img src="{{ $p['image_url'] }}" 
                                          alt="{{ $p['name'] }}"
                                          class="w-full h-full object-cover relative z-10" 
                                          onerror="this.style.display='none'"> 
-                                    <!-- Si falla la carga, el display none permite ver el icono de abajo -->
                                 @endif
-                                <!-- Icono de respaldo (siempre está debajo) -->
                                 <div class="absolute inset-0 flex items-center justify-center text-gray-600 bg-gray-800 z-0">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 </div>
                             </div>
                             
-                            <!-- Detalles -->
                             <div class="flex-grow text-center sm:text-left">
                                 <h3 class="font-bold text-white">{{ $p['name'] }}</h3>
                                 <p class="text-sm text-primary font-mono">${{ number_format($p['price'], 2) }} c/u</p>
                             </div>
 
-                            <!-- Cantidad -->
                             <div class="flex items-center bg-gray-800 rounded-lg p-1 border border-gray-700">
                                 <button onclick="cartDecrement({{ $p['id'] }})" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 rounded transition">-</button>
                                 <span id="qty-{{ $p['id'] }}" class="w-8 text-center text-sm font-bold text-white">{{ $p['quantity'] ?? 1 }}</span>
                                 <button onclick="cartIncrement({{ $p['id'] }})" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 rounded transition">+</button>
                             </div>
 
-                            <!-- Subtotal -->
                             <div class="text-right min-w-[80px]">
                                 <p class="text-xs text-gray-500">Subtotal</p>
                                 <p id="sub-{{ $p['id'] }}" class="font-bold text-white font-mono">
@@ -250,7 +238,6 @@
                 </div>
                 @endif
 
-                <!-- SERVICIOS -->
                 @if(!empty($cart['services']))
                 <div>
                     <h2 class="text-lg font-bold text-gray-300 mb-4 mt-8 flex items-center gap-2">
@@ -288,7 +275,6 @@
 
             </div>
 
-            <!-- RIGHT COLUMN: SUMMARY -->
             <div class="w-full lg:w-1/3">
                 <div class="glass-panel p-6 rounded-2xl sticky top-28 shadow-2xl">
                     <h3 class="text-xl font-bold text-white mb-6 pb-4 border-b border-gray-800">Resumen del Pedido</h3>

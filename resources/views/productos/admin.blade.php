@@ -25,7 +25,6 @@
     </script>
     <style>
         body { background-color: #0B0E14; color: #e2e8f0; font-family: 'Inter', sans-serif; }
-        /* Clases utilitarias para inputs estilo glass */
         .glass-input {
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid #334155;
@@ -38,7 +37,6 @@
             outline: none;
             box-shadow: 0 0 0 1px rgba(0, 214, 143, 0.3);
         }
-        /* Ocultar scrollbar en modales */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -344,12 +342,9 @@
             document.getElementById(modalId).classList.add('hidden');
         }
 
-        // Función para poblar el modal de edición
         function openEditModal(button) {
-            // Leer datos del botón (data attributes)
             const data = button.dataset;
             
-            // Llenar inputs
             document.getElementById('edit_name').value = data.name;
             document.getElementById('edit_cost_price').value = data.cost_price;
             document.getElementById('edit_price').value = data.price;
@@ -359,14 +354,11 @@
             document.getElementById('edit_image').value = data.image;
             document.getElementById('edit_description').value = data.description;
 
-            // Actualizar action del formulario
             document.getElementById('editForm').action = data.action;
 
-            // Mostrar modal
             openModal('editModal');
         }
 
-        // Cerrar modales con tecla ESC
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape") {
                 closeModal('createModal');

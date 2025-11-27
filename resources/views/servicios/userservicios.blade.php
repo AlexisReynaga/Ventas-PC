@@ -47,7 +47,6 @@
         .animate-cart-add {
             animation: bounce-sm 0.3s ease-in-out;
         }
-        /* Animación dropdown */
         .dropdown-enter {
             animation: slideDown 0.2s ease-out forwards;
         }
@@ -71,12 +70,10 @@
         </div>
     </div>
 
-    <!-- Contenido -->
     <div class="flex-grow max-w-[1400px] mx-auto px-4 py-8 w-full">
         
         <div class="flex flex-col lg:flex-row gap-8">
             
-            <!-- Sidebar Filtros -->
             <aside class="w-full lg:w-64 flex-shrink-0">
                 <div class="lg:sticky lg:top-24 space-y-6">
                     <button onclick="document.getElementById('mobile-filters').classList.toggle('hidden')" class="lg:hidden w-full bg-card border border-gray-700 p-3 rounded-lg text-left flex justify-between items-center text-white font-semibold">
@@ -124,7 +121,6 @@
                 </div>
             </aside>
 
-            <!-- Grid de Servicios -->
             <div class="flex-grow">
                 
                 @php($items = $services['items'] ?? [])
@@ -144,14 +140,11 @@
                     @foreach($items as $s)
                     <div class="group bg-card rounded-2xl border border-gray-800 overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-card-hover flex flex-col h-full relative">
                         
-                        <!-- Top Decoration -->
                         <div class="h-2 bg-gradient-to-r from-gray-800 to-gray-700 group-hover:from-primary group-hover:to-emerald-500 transition-all"></div>
 
                         <div class="p-6 flex flex-col flex-grow">
-                            <!-- Header Card -->
                             <div class="flex justify-between items-start mb-4">
                                 <div class="w-12 h-12 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center text-primary group-hover:shadow-neon transition-all">
-                                    <!-- Icono Genérico de Servicio -->
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                 </div>
                                 @if($s['type'] ?? false)
@@ -167,7 +160,6 @@
                                 {{ $s['description'] ?? 'Contáctanos para más detalles sobre este servicio profesional.' }}
                             </p>
 
-                            <!-- Detalles Técnicos -->
                             <div class="flex items-center gap-4 text-xs text-gray-500 mb-6 border-t border-gray-800 pt-4">
                                 @if(!empty($s['estimated_time']))
                                 <div class="flex items-center gap-1.5">
@@ -181,7 +173,6 @@
                                 </div>
                             </div>
 
-                            <!-- Footer Card -->
                             <div class="flex items-center justify-between">
                                 <div class="flex flex-col">
                                     <span class="text-xs text-gray-500">Costo aproximado</span>
@@ -202,7 +193,6 @@
                     @endforeach
                 </div>
 
-                <!-- Paginación -->
                 <div class="mt-12 flex justify-center">
                     <div class="flex gap-2">
                         @if($current > 1)
@@ -226,7 +216,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="bg-dark border-t border-gray-800 mt-12 py-10">
         <div class="max-w-[1400px] mx-auto px-4 text-center">
             <h2 class="text-2xl font-bold text-white mb-2">Valenzo's <span class="text-primary">PC</span></h2>
@@ -235,7 +224,6 @@
         </div>
     </footer>
 
-    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-5 right-5 bg-card border border-primary/50 text-white px-6 py-4 rounded-lg shadow-neon transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3">
         <div class="bg-primary/20 p-2 rounded-full text-primary">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
