@@ -49,8 +49,10 @@ class CartController extends Controller
         try {
             $data = $this->client->product($id);
             $item = $data['data'] ?? $data; // flexible
+            
             // Si ya existe en carrito, incrementa cantidad
             $existingIndex = collect($cart['products'])->search(fn($p) => ($p['id'] ?? null) == ($item['id'] ?? $id));
+            
             if ($existingIndex !== false) {
                 $cart['products'][$existingIndex]['quantity'] = (int)($cart['products'][$existingIndex]['quantity'] ?? 1) + 1;
             } else {
@@ -60,9 +62,13 @@ class CartController extends Controller
                     'cost_price' => $item['cost_price'] ?? 0,
                     'price' => $item['price'] ?? 0,
                     'quantity' => 1,
+                    // CORRECCIÓN: Agregamos la imagen al array de sesión
+                    'image_url' => $item['image_url'] ?? '', 
                 ];
             }
+            
             $this->saveCart($cart);
+            
             if (request()->wantsJson()) {
                 return response()->json(['message' => 'Producto agregado', 'cart' => $cart]);
             }

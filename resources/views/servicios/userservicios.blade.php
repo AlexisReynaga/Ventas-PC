@@ -60,7 +60,6 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col">
 
-    <!-- NAVBAR (Consistente con Productos) -->
 <x-navbar />
 
     <div class="bg-gradient-to-b from-card to-dark py-12 border-b border-white/5">
