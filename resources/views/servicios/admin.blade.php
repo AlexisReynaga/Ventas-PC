@@ -39,12 +39,15 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .animate-fade-in-up { animation: fadeInUp 0.3s ease-out forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="antialiased min-h-screen flex flex-col relative">
 
 <x-navbar />
+
     <main class="flex-grow p-6 max-w-[1400px] mx-auto w-full">
         
         <div class="flex flex-col sm:flex-row justify-between items-end mb-8 gap-4">
@@ -102,7 +105,6 @@
             </form>
         </div>
 
-        <!-- Tabla -->
         @php($items = $services['items'] ?? ($services['data'] ?? []))
         @php($current = $services['current_page'] ?? 1)
         @php($last = $services['last_page'] ?? 1)
@@ -130,13 +132,11 @@
                         <tr class="hover:bg-gray-800/40 transition-colors group">
                             <td class="px-6 py-4 font-mono text-gray-600">#{{ $s['id'] ?? '-' }}</td>
                             
-                            <!-- Info Servicio -->
                             <td class="px-6 py-4">
                                 <div class="font-medium text-white text-base">{{ $s['name'] ?? $s['nombre'] ?? 'Sin Nombre' }}</div>
                                 <div class="text-xs text-gray-500 truncate max-w-[250px] mt-1">{{ $s['description'] ?? '' }}</div>
                             </td>
 
-                            <!-- Precio y Tiempo -->
                             <td class="px-6 py-4">
                                 <div class="flex flex-col">
                                     <span class="text-emerald-400 font-mono font-bold text-base">
@@ -176,7 +176,6 @@
                             <td class="px-6 py-4 text-right">
                                 @if($isAdmin)
                                 <div class="flex items-center justify-end gap-2">
-                                    <!-- Botón Editar (Abre Modal) -->
                                     <button 
                                         onclick="openEditModal(this)"
                                         data-id="{{ $s['id'] }}"
@@ -187,17 +186,15 @@
                                         data-status="{{ $s['status'] ?? 'inactive' }}"
                                         data-description="{{ $s['description'] ?? '' }}"
                                         data-action="{{ route('servicios.admin.update', $s['id']) }}"
-                                        class="p-2 rounded-lg hover:bg-blue-500/20 text-gray-500 hover:text-emerald-400 transition-colors" title="Editar">
+                                        class="p-2 rounded-lg hover:bg-blue-500/20 text-gray-500 hover:text-blue-400 transition-colors" title="Editar">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                     </button>
 
-                                    <!-- Botón Eliminar -->
-                                    <form method="POST" action="{{ route('servicios.admin.delete', $s['id']) }}" onsubmit="return confirm('¿Eliminar servicio definitivamente?');">
-                                        @csrf
-                                        <button type="submit" class="p-2 rounded-lg hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors" title="Eliminar">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                        </button>
-                                    </form>
+                                    <!-- Botón Eliminar con Modal -->
+                                    <button onclick="openDeleteModal('{{ route('servicios.admin.delete', $s['id']) }}')" 
+                                        class="p-2 rounded-lg hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors" title="Eliminar">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
                                 </div>
                                 @endif
                             </td>
@@ -227,10 +224,11 @@
 
     </main>
 
+    <!-- Modal CREAR (Mismo) -->
     <div id="createModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('createModal')"></div>
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xl">
-            <div class="bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden">
+            <div class="bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
                 <div class="bg-gray-900/50 px-6 py-4 border-b border-gray-700 flex justify-between items-center">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
                         <span class="w-1.5 h-6 bg-primary rounded-full"></span> Nuevo Servicio
@@ -277,15 +275,15 @@
         </div>
     </div>
 
+    <!-- Modal EDITAR (Mismo) -->
     <div id="editModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('editModal')"></div>
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xl">
-            <div class="bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden">
+            <div class="bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
                 <div class="bg-gray-900/50 px-6 py-4 border-b border-gray-700 flex justify-between items-center">
                     <h3 class="text-lg font-bold text-white">Editar Servicio</h3>
                     <button onclick="closeModal('editModal')" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
                 </div>
-                
                 <form id="editForm" method="POST" action="" class="p-6">
                     @csrf
                     <div class="grid grid-cols-2 gap-4">
@@ -319,13 +317,42 @@
                     </div>
                     <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-gray-800">
                         <button type="button" onclick="closeModal('editModal')" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white text-sm transition">Cancelar</button>
-                        <button type="submit" class="bg-emerald-400 hover:bg-emerald-500 text-white font-bold px-6 py-2 rounded-lg shadow-lg text-sm transition">Actualizar</button>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow-lg text-sm transition">Actualizar</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- NUEVO: Modal de Confirmación de ELIMINAR -->
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('deleteModal')"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-sm">
+            <div class="bg-card border border-red-900/50 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
+                <div class="p-6 text-center">
+                    <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">¿Eliminar Servicio?</h3>
+                    <p class="text-gray-400 text-sm mb-6">Esta acción no se puede deshacer. El servicio será eliminado permanentemente del catálogo.</p>
+                    
+                    <form id="deleteForm" method="POST" action="">
+                        @csrf
+                        <div class="flex gap-3 justify-center">
+                            <button type="button" onclick="closeModal('deleteModal')" class="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 text-sm font-bold shadow-lg transition">
+                                Sí, Eliminar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script>
         function openModal(modalId) {
             document.getElementById(modalId).classList.remove('hidden');
@@ -337,24 +364,27 @@
 
         function openEditModal(button) {
             const data = button.dataset;
-            
-            // Llenar inputs
             document.getElementById('edit_name').value = data.name;
             document.getElementById('edit_price').value = data.price;
             document.getElementById('edit_time').value = data.time;
             document.getElementById('edit_type').value = data.type;
             document.getElementById('edit_status').value = data.status;
             document.getElementById('edit_description').value = data.description;
-
             document.getElementById('editForm').action = data.action;
-
             openModal('editModal');
+        }
+
+        // NUEVO: Abrir Modal de Eliminación
+        function openDeleteModal(actionUrl) {
+            document.getElementById('deleteForm').action = actionUrl;
+            openModal('deleteModal');
         }
 
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape") {
                 closeModal('createModal');
                 closeModal('editModal');
+                closeModal('deleteModal');
             }
         });
     </script>

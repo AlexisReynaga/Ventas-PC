@@ -25,6 +25,7 @@
     </script>
     <style>
         body { background-color: #0B0E14; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        /* Clases utilitarias para inputs estilo glass */
         .glass-input {
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid #334155;
@@ -37,14 +38,31 @@
             outline: none;
             box-shadow: 0 0 0 1px rgba(0, 214, 143, 0.3);
         }
+        /* Ocultar scrollbar en modales */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Animaciones */
+        .dropdown-enter {
+            animation: slideDown 0.2s ease-out forwards;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.3s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="antialiased min-h-screen flex flex-col relative">
 
-<x-navbar />
+    {{-- Navbar Universal --}}
+    <x-navbar />
 
     <main class="flex-grow p-6 max-w-[1400px] mx-auto w-full">
         
@@ -108,8 +126,7 @@
                         <tr>
                             <th class="px-6 py-4">Producto</th>
                             <th class="px-6 py-4">Categoría</th>
-                            <th class="px-6 py-4">Costo</th>
-                            <th class="px-6 py-4">Precio Público</th>
+                            <th class="px-6 py-4">Precio</th>
                             <th class="px-6 py-4">Stock</th>
                             <th class="px-6 py-4">Estado</th>
                             <th class="px-6 py-4 text-right">Acciones</th>
@@ -134,25 +151,7 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4">{{ $p['category'] ?? '-' }}</td>
-                            @php($costo = (float)($p['cost_price'] ?? 0))
-                            @php($publico = (float)($p['price'] ?? 0))
-                            <td class="px-6 py-4 font-mono">
-                                @if(!isset($p['cost_price']))
-                                    <span class="text-gray-500 italic">N/D</span>
-                                @else
-                                    <span class="{{ $costo <= 0 ? 'text-gray-500' : 'text-gray-300' }}">${{ number_format($costo,2) }}</span>
-                                    @if($costo > $publico && $publico > 0)
-                                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-500/10 text-red-400 border border-red-500/30" title="El costo supera el precio público">Alerta</span>
-                                    @endif
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 font-mono font-medium">
-                                <span class="text-emerald-400">${{ number_format($publico,2) }}</span>
-                                @if($publico > 0 && $costo > 0 && $publico > $costo)
-                                    @php($margenUnit = $publico - $costo)
-                                    <span class="block text-[11px] text-cyan-300 mt-0.5" title="Margen unitario">+ ${{ number_format($margenUnit,2) }}</span>
-                                @endif
-                            </td>
+                            <td class="px-6 py-4 text-emerald-400 font-mono font-medium">${{ number_format($p['price'] ?? 0, 2) }}</td>
                             <td class="px-6 py-4">
                                 <span class="{{ ($p['stock'] ?? 0) < 5 ? 'text-red-400' : 'text-gray-300' }}">
                                     {{ $p['stock'] ?? 0 }} u.
@@ -176,7 +175,6 @@
                                         onclick="openEditModal(this)"
                                         data-id="{{ $p['id'] }}"
                                         data-name="{{ $p['name'] ?? $p['nombre'] ?? '' }}"
-                                        data-cost_price="{{ $p['cost_price'] ?? '' }}"
                                         data-price="{{ $p['price'] ?? '' }}"
                                         data-stock="{{ $p['stock'] ?? '' }}"
                                         data-category="{{ $p['category'] ?? '' }}"
@@ -188,24 +186,24 @@
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                     </button>
 
-                                    <form method="POST" action="{{ route('productos.admin.delete', $p['id']) }}" onsubmit="return confirm('¿Eliminar producto definitivamente?');">
-                                        @csrf
-                                        <button type="submit" class="p-2 rounded-lg hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors" title="Eliminar">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                        </button>
-                                    </form>
+                                    <!-- Botón Eliminar modificado para abrir modal -->
+                                    <button onclick="openDeleteModal('{{ route('productos.admin.delete', $p['id']) }}')" 
+                                        class="p-2 rounded-lg hover:bg-red-500/20 text-gray-500 hover:text-red-400 transition-colors" title="Eliminar">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
                                 </div>
                                 @endif
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-gray-500">No se encontraron productos.</td>
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500">No se encontraron productos.</td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+            <!-- Paginación -->
             <div class="bg-gray-900/40 px-6 py-4 border-t border-gray-800 flex justify-between items-center">
                 <span class="text-xs text-gray-500">Pág {{ $current }} de {{ $last }}</span>
                 <div class="flex gap-2">
@@ -221,6 +219,7 @@
 
     </main>
 
+    <!-- Modal CREAR (Mismo código) -->
     <div id="createModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('createModal')"></div>
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl">
@@ -237,11 +236,7 @@
                             <input type="text" name="name" required class="glass-input w-full p-2.5 rounded-lg text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">Precio de Costo ($)</label>
-                            <input type="number" step="0.01" name="cost_price" required class="glass-input w-full p-2.5 rounded-lg text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1">Precio Público ($)</label>
+                            <label class="block text-xs text-gray-400 mb-1">Precio ($)</label>
                             <input type="number" step="0.01" name="price" required class="glass-input w-full p-2.5 rounded-lg text-sm">
                         </div>
                         <div>
@@ -277,10 +272,11 @@
         </div>
     </div>
 
+    <!-- Modal EDITAR (Mismo código) -->
     <div id="editModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('editModal')"></div>
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl">
-            <div class="bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden">
+            <div class="bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
                 <div class="bg-gray-900/50 px-6 py-4 border-b border-gray-700 flex justify-between items-center">
                     <h3 class="text-lg font-bold text-white">Editar Producto</h3>
                     <button onclick="closeModal('editModal')" class="text-gray-400 hover:text-white">&times;</button>
@@ -293,11 +289,7 @@
                             <input type="text" id="edit_name" name="name" class="glass-input w-full p-2.5 rounded-lg text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1">Precio de Costo ($)</label>
-                            <input type="number" step="0.01" id="edit_cost_price" name="cost_price" class="glass-input w-full p-2.5 rounded-lg text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1">Precio Público ($)</label>
+                            <label class="block text-xs text-gray-400 mb-1">Precio ($)</label>
                             <input type="number" step="0.01" id="edit_price" name="price" class="glass-input w-full p-2.5 rounded-lg text-sm">
                         </div>
                         <div>
@@ -333,6 +325,34 @@
         </div>
     </div>
 
+    <!-- NUEVO: Modal de Confirmación de ELIMINAR -->
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('deleteModal')"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-sm">
+            <div class="bg-card border border-red-900/50 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
+                <div class="p-6 text-center">
+                    <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">¿Eliminar Producto?</h3>
+                    <p class="text-gray-400 text-sm mb-6">Esta acción no se puede deshacer. El producto será eliminado del inventario permanentemente.</p>
+                    
+                    <form id="deleteForm" method="POST" action="">
+                        @csrf
+                        <div class="flex gap-3 justify-center">
+                            <button type="button" onclick="closeModal('deleteModal')" class="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 text-sm font-bold shadow-lg transition">
+                                Sí, Eliminar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openModal(modalId) {
             document.getElementById(modalId).classList.remove('hidden');
@@ -342,27 +362,31 @@
             document.getElementById(modalId).classList.add('hidden');
         }
 
+        // Abrir Modal de Edición
         function openEditModal(button) {
             const data = button.dataset;
-            
             document.getElementById('edit_name').value = data.name;
-            document.getElementById('edit_cost_price').value = data.cost_price;
             document.getElementById('edit_price').value = data.price;
             document.getElementById('edit_stock').value = data.stock;
             document.getElementById('edit_category').value = data.category;
             document.getElementById('edit_status').value = data.status;
             document.getElementById('edit_image').value = data.image;
             document.getElementById('edit_description').value = data.description;
-
             document.getElementById('editForm').action = data.action;
-
             openModal('editModal');
+        }
+
+        // NUEVO: Abrir Modal de Eliminación
+        function openDeleteModal(actionUrl) {
+            document.getElementById('deleteForm').action = actionUrl;
+            openModal('deleteModal');
         }
 
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape") {
                 closeModal('createModal');
                 closeModal('editModal');
+                closeModal('deleteModal');
             }
         });
     </script>
