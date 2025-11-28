@@ -66,8 +66,8 @@ Route::post('carrito/producto/{id}/disminuir', [CartController::class, 'decremen
 Route::post('carrito/producto/{id}/eliminar', [CartController::class, 'removeProduct'])->whereNumber('id')->name('carrito.product.remove');
 Route::post('carrito/vaciar', [CartController::class, 'clear'])->name('carrito.clear');
 Route::post('carrito/servicio/{id}/eliminar', [CartController::class, 'removeService'])->whereNumber('id')->name('carrito.service.remove');
-Route::post('carrito/comprar', [CartController::class, 'checkout'])->name('carrito.checkout');
-Route::post('carrito/generar-ticket', [CartController::class, 'generateTicket'])->name('carrito.ticket');
+Route::post('carrito/comprar', [CartController::class, 'checkout'])->middleware('auth')->name('carrito.checkout');
+Route::post('carrito/generar-ticket', [CartController::class, 'generateTicket'])->middleware('auth')->name('carrito.ticket');
 
 // Agendar servicio (formulario + guardar)
 Route::get('servicios/{id}/agendar', [CartController::class, 'scheduleForm'])->whereNumber('id')->name('servicios.schedule.form');

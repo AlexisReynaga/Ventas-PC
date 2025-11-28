@@ -127,6 +127,7 @@
                             <th class="px-6 py-4">Producto</th>
                             <th class="px-6 py-4">Categoría</th>
                             <th class="px-6 py-4">Precio</th>
+                            <th class="px-6 py-4">Costo</th>
                             <th class="px-6 py-4">Stock</th>
                             <th class="px-6 py-4">Estado</th>
                             <th class="px-6 py-4 text-right">Acciones</th>
@@ -153,6 +154,14 @@
                             <td class="px-6 py-4">{{ $p['category'] ?? '-' }}</td>
                             <td class="px-6 py-4 text-emerald-400 font-mono font-medium">${{ number_format($p['price'] ?? 0, 2) }}</td>
                             <td class="px-6 py-4">
+                                <span class="font-mono {{ isset($p['cost_price']) && ($p['cost_price'] > ($p['price'] ?? 0)) ? 'text-red-400' : 'text-gray-300' }}">
+                                    ${{ number_format($p['cost_price'] ?? 0, 2) }}
+                                </span>
+                                @if(isset($p['price']) && isset($p['cost_price']))
+                                    <div class="text-xs text-gray-500">Margen: ${{ number_format(($p['price'] - $p['cost_price']), 2) }}</div>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">
                                 <span class="{{ ($p['stock'] ?? 0) < 5 ? 'text-red-400' : 'text-gray-300' }}">
                                     {{ $p['stock'] ?? 0 }} u.
                                 </span>
@@ -176,6 +185,7 @@
                                         data-id="{{ $p['id'] }}"
                                         data-name="{{ $p['name'] ?? $p['nombre'] ?? '' }}"
                                         data-price="{{ $p['price'] ?? '' }}"
+                                        data-cost="{{ $p['cost_price'] ?? '' }}"
                                         data-stock="{{ $p['stock'] ?? '' }}"
                                         data-category="{{ $p['category'] ?? '' }}"
                                         data-status="{{ $p['status'] ?? 'inactive' }}"
@@ -225,10 +235,13 @@
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl">
             <div class="bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
                 <div class="bg-gray-900/50 px-6 py-4 border-b border-gray-700 flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-white">Nuevo Producto</h3>
-                    <button onclick="closeModal('createModal')" class="text-gray-400 hover:text-white">&times;</button>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span class="w-1.5 h-6 bg-primary rounded-full"></span>
+                        Nuevo Producto
+                    </h3>
+                    <button onclick="closeModal('createModal')" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
                 </div>
-                <form method="POST" action="{{ route('productos.admin.create') }}" class="p-6">
+                <form method="POST" action="{{ route('productos.admin.create') }}" class="p-6 space-y-4">
                     @csrf
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2">
@@ -238,6 +251,10 @@
                         <div>
                             <label class="block text-xs text-gray-400 mb-1">Precio ($)</label>
                             <input type="number" step="0.01" name="price" required class="glass-input w-full p-2.5 rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Costo ($)</label>
+                            <input type="number" step="0.01" name="cost_price" required class="glass-input w-full p-2.5 rounded-lg text-sm">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-400 mb-1">Stock</label>
@@ -263,7 +280,7 @@
                             <textarea name="description" rows="3" class="glass-input w-full p-2.5 rounded-lg text-sm resize-none"></textarea>
                         </div>
                     </div>
-                    <div class="mt-6 flex justify-end gap-3">
+                    <div class="pt-4 flex justify-end gap-3 border-t border-gray-800 mt-2">
                         <button type="button" onclick="closeModal('createModal')" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white text-sm transition">Cancelar</button>
                         <button type="submit" class="bg-primary hover:bg-primaryDark text-dark font-bold px-6 py-2 rounded-lg shadow-neon text-sm transition">Guardar</button>
                     </div>
@@ -278,10 +295,13 @@
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl">
             <div class="bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
                 <div class="bg-gray-900/50 px-6 py-4 border-b border-gray-700 flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-white">Editar Producto</h3>
-                    <button onclick="closeModal('editModal')" class="text-gray-400 hover:text-white">&times;</button>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span class="w-1.5 h-6 bg-primary rounded-full"></span>
+                        Editar Producto
+                    </h3>
+                    <button onclick="closeModal('editModal')" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
                 </div>
-                <form id="editForm" method="POST" action="" class="p-6">
+                <form id="editForm" method="POST" action="" class="p-6 space-y-4">
                     @csrf
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2">
@@ -291,6 +311,10 @@
                         <div>
                             <label class="block text-xs text-gray-400 mb-1">Precio ($)</label>
                             <input type="number" step="0.01" id="edit_price" name="price" class="glass-input w-full p-2.5 rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Costo ($)</label>
+                            <input type="number" step="0.01" id="edit_cost" name="cost_price" class="glass-input w-full p-2.5 rounded-lg text-sm">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-400 mb-1">Stock</label>
@@ -316,9 +340,9 @@
                             <textarea id="edit_description" name="description" rows="3" class="glass-input w-full p-2.5 rounded-lg text-sm resize-none"></textarea>
                         </div>
                     </div>
-                    <div class="mt-6 flex justify-end gap-3">
+                    <div class="pt-4 flex justify-end gap-3 border-t border-gray-800 mt-2">
                         <button type="button" onclick="closeModal('editModal')" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white text-sm transition">Cancelar</button>
-                        <button type="submit" class="bg-emerald-400 hover:bg-emerald-500 text-white font-bold px-6 py-2 rounded-lg shadow-lg text-sm transition">Actualizar</button>
+                        <button type="submit" class="bg-primary hover:bg-primaryDark text-dark font-bold px-6 py-2 rounded-lg shadow-neon text-sm transition">Actualizar</button>
                     </div>
                 </form>
             </div>
@@ -367,6 +391,7 @@
             const data = button.dataset;
             document.getElementById('edit_name').value = data.name;
             document.getElementById('edit_price').value = data.price;
+            document.getElementById('edit_cost').value = data.cost || '';
             document.getElementById('edit_stock').value = data.stock;
             document.getElementById('edit_category').value = data.category;
             document.getElementById('edit_status').value = data.status;

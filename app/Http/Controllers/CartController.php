@@ -178,6 +178,10 @@ class CartController extends Controller
 
     public function checkout()
     {
+        if (!\Illuminate\Support\Facades\Auth::check()) {
+            session(['intended_after_login' => 'carrito.checkout']);
+            return redirect()->route('login')->with('status', 'Inicia sesión para continuar con la compra');
+        }
         $cart = $this->getCart();
         if (empty($cart['products']) && empty($cart['services'])) {
             return redirect()->route('carrito.index')->with('status', 'El carrito está vacío');
@@ -187,6 +191,10 @@ class CartController extends Controller
 
     public function generateTicket()
     {
+        if (!\Illuminate\Support\Facades\Auth::check()) {
+            session(['intended_after_login' => 'carrito.ticket']);
+            return redirect()->route('login')->with('status', 'Inicia sesión para generar el ticket');
+        }
         $cart = $this->getCart();
         if (empty($cart['products']) && empty($cart['services'])) {
             return redirect()->route('carrito.index')->with('status', 'El carrito está vacío');
@@ -263,6 +271,18 @@ class CartController extends Controller
             'date' => ['required','date','after_or_equal:today'],
             'time' => ['required','date_format:H:i'],
         ]);
+        // Validación adicional de horario: entre 08:00 y 20:00
+        try {
+            [$hour, $min] = array_map('intval', explode(':', $payload['time']));
+            $minutes = $hour * 60 + $min;
+            $minAllowed = 8 * 60;   // 08:00
+            $maxAllowed = 20 * 60;  // 20:00
+            if ($minutes < $minAllowed || $minutes > $maxAllowed) {
+                return back()->withErrors(['time' => 'La hora debe estar entre 08:00 y 20:00'])->withInput();
+            }
+        } catch (\Throwable $e) {
+            return back()->withErrors(['time' => 'Hora inválida'])->withInput();
+        }
         $cart = $this->getCart();
         try {
             $data = $this->client->service($id);

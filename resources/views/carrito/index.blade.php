@@ -117,37 +117,49 @@
             } catch (e) { console.error(e); }
         }
 
-        async function cartRemoveProduct(id) {
-            if(!confirm('¿Eliminar producto?')) return;
-            try {
-                const data = await cartPost('{{ url('carrito/producto') }}/'+id+'/eliminar');
-                updateProductRowFromCart(data.cart, id);
-                updateTotals(data.cart);
-                updateBadgeFromCart(data.cart);
-            } catch (e) { console.error(e); }
+        let pendingAction = null;
+        let pendingId = null;
+
+        function openConfirmModal(type, id) {
+            pendingAction = type; pendingId = id || null;
+            document.getElementById('confirmTitle').textContent = type === 'product' ? '¿Eliminar Producto?' : (type === 'service' ? '¿Eliminar Servicio?' : '¿Vaciar Carrito?');
+            document.getElementById('confirmMessage').textContent = type === 'clear'
+                ? 'Esta acción no se puede deshacer. Se eliminarán todos los productos y servicios del carrito.'
+                : 'Esta acción no se puede deshacer.';
+            document.getElementById('confirmModal').classList.remove('hidden');
         }
 
-        async function cartRemoveService(id) {
-            if(!confirm('¿Eliminar servicio?')) return;
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            pendingAction = null; pendingId = null;
+        }
+
+        async function confirmProceed() {
             try {
-                const data = await cartPost('{{ url('carrito/servicio') }}/'+id+'/eliminar');
-                var row = document.getElementById('row-service-'+id);
-                if (row) {
-                    row.classList.add('fade-out');
-                    setTimeout(() => row.remove(), 300);
+                if (pendingAction === 'product' && pendingId) {
+                    const data = await cartPost('{{ url('carrito/producto') }}/'+pendingId+'/eliminar');
+                    updateProductRowFromCart(data.cart, pendingId);
+                    updateTotals(data.cart);
+                    updateBadgeFromCart(data.cart);
+                } else if (pendingAction === 'service' && pendingId) {
+                    const data = await cartPost('{{ url('carrito/servicio') }}/'+pendingId+'/eliminar');
+                    var row = document.getElementById('row-service-'+pendingId);
+                    if (row) { row.classList.add('fade-out'); setTimeout(() => row.remove(), 300); }
+                    updateTotals(data.cart);
+                    updateBadgeFromCart(data.cart);
+                } else if (pendingAction === 'clear') {
+                    await cartPost('{{ route('carrito.clear') }}');
+                    location.reload();
                 }
-                updateTotals(data.cart);
-                updateBadgeFromCart(data.cart);
             } catch (e) { console.error(e); }
+            finally { closeConfirmModal(); }
         }
 
-        async function cartClear() {
-            if(!confirm('¿Seguro que deseas vaciar todo el carrito?')) return;
-            try {
-                const data = await cartPost('{{ route('carrito.clear') }}');
-                location.reload(); 
-            } catch (e) { console.error(e); }
-        }
+        function cartRemoveProduct(id) { openConfirmModal('product', id); }
+
+        function cartRemoveService(id) { openConfirmModal('service', id); }
+
+        function cartClear() { openConfirmModal('clear'); }
     </script>
 </head>
 <body class="antialiased min-h-screen flex flex-col relative">
@@ -280,18 +292,28 @@
                     <h3 class="text-xl font-bold text-white mb-6 pb-4 border-b border-gray-800">Resumen del Pedido</h3>
                     
                     <div class="flex justify-between items-center mb-2 text-gray-400 text-sm">
+                        @php($calcSubtotal = 0)
+                        @foreach(($cart['products'] ?? []) as $pp)
+                            @php($calcSubtotal += (float)($pp['price'] ?? 0) * (int)($pp['quantity'] ?? 1))
+                        @endforeach
+                        @foreach(($cart['services'] ?? []) as $ss)
+                            @php($calcSubtotal += (float)($ss['price'] ?? 0))
+                        @endforeach
                         <span>Subtotal</span>
-                        <span>-</span>
+                        <span id="cart-subtotal">${{ number_format($calcSubtotal, 2) }}</span>
                     </div>
                     <div class="flex justify-between items-center mb-6 text-gray-400 text-sm">
-                        <span>Impuestos est.</span>
-                        <span>$0.00</span>
+                        @php($taxRate = 0.16)
+                        @php($calcTax = round($calcSubtotal * $taxRate, 2))
+                        <span>Impuestos est. (IVA {{ (int)($taxRate*100) }}%)</span>
+                        <span id="cart-tax">${{ number_format($calcTax, 2) }}</span>
                     </div>
 
                     <div class="flex justify-between items-center mb-8 pt-4 border-t border-gray-800">
                         <span class="text-lg font-bold text-white">Total</span>
+                        @php($calcTotal = round($calcSubtotal + $calcTax, 2))
                         <span class="text-2xl font-black text-primary font-mono" id="cart-total">
-                            ${{ number_format($cart['total'], 2) }}
+                            ${{ number_format($calcTotal, 2) }}
                         </span>
                     </div>
 
@@ -319,6 +341,30 @@
         </div>
 
     </main>
+
+    <!-- Modal de Confirmación Genérico -->
+    <div id="confirmModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeConfirmModal()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-sm">
+            <div class="bg-card border border-red-900/50 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
+                <div class="p-6 text-center">
+                    <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </div>
+                    <h3 id="confirmTitle" class="text-xl font-bold text-white mb-2">Confirmar acción</h3>
+                    <p id="confirmMessage" class="text-gray-400 text-sm mb-6">Esta acción no se puede deshacer.</p>
+                    <div class="flex gap-3 justify-center">
+                        <button type="button" onclick="closeConfirmModal()" class="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition">
+                            Cancelar
+                        </button>
+                        <button type="button" onclick="confirmProceed()" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 text-sm font-bold shadow-lg transition">
+                            Sí, Continuar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

@@ -281,10 +281,13 @@
         <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xl">
             <div class="bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
                 <div class="bg-gray-900/50 px-6 py-4 border-b border-gray-700 flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-white">Editar Servicio</h3>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span class="w-1.5 h-6 bg-primary rounded-full"></span>
+                        Editar Servicio
+                    </h3>
                     <button onclick="closeModal('editModal')" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
                 </div>
-                <form id="editForm" method="POST" action="" class="p-6">
+                <form id="editForm" method="POST" action="" class="p-6 space-y-4">
                     @csrf
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2">
@@ -317,7 +320,7 @@
                     </div>
                     <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-gray-800">
                         <button type="button" onclick="closeModal('editModal')" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white text-sm transition">Cancelar</button>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow-lg text-sm transition">Actualizar</button>
+                        <button type="submit" class="bg-primary hover:bg-primaryDark text-dark font-bold px-6 py-2 rounded-lg shadow-neon text-sm transition">Actualizar</button>
                     </div>
                 </form>
             </div>

@@ -183,18 +183,21 @@
 
     <div id="roleModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('roleModal')"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-sm">
-            <div class="bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md">
+            <div class="bg-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden animate-fade-in-up">
                 <div class="bg-gray-900/50 px-6 py-4 border-b border-gray-700 flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-white">Cambiar Rol</h3>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span class="w-1.5 h-6 bg-primary rounded-full"></span>
+                        Cambiar Rol
+                    </h3>
                     <button onclick="closeModal('roleModal')" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
                 </div>
-                
-                <form id="roleForm" method="POST" action="" class="p-6">
+
+                <form id="roleForm" method="POST" action="" class="p-6 space-y-4">
                     @csrf
-                    <p class="text-gray-400 text-sm mb-4">Editando permisos para: <span id="roleUserName" class="text-white font-bold"></span></p>
-                    
-                    <div class="mb-6">
+                    <p class="text-gray-400 text-sm">Editando permisos para: <span id="roleUserName" class="text-white font-bold"></span></p>
+
+                    <div>
                         <label class="block text-xs text-gray-400 mb-1">Nuevo Rol</label>
                         <select name="role" id="roleSelect" class="glass-input w-full p-3 rounded-lg text-sm">
                             <option value="customer" class="bg-dark">Customer (Cliente)</option>
@@ -202,9 +205,9 @@
                         </select>
                     </div>
 
-                    <div class="flex justify-end gap-3">
+                    <div class="pt-4 flex justify-end gap-3 border-t border-gray-800 mt-2">
                         <button type="button" onclick="closeModal('roleModal')" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white text-sm transition">Cancelar</button>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow-lg text-sm transition">Guardar Cambios</button>
+                        <button type="submit" class="bg-primary hover:bg-primaryDark text-dark font-bold px-6 py-2 rounded-lg shadow-neon text-sm transition">Guardar Cambios</button>
                     </div>
                 </form>
             </div>
