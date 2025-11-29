@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro | Valenzo's PC</title>
+    <title>Registro | Ventas PC</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -65,7 +65,7 @@
         <div class="text-center mb-6">
             <a href="{{ route('home') }}" class="inline-flex items-center gap-3 group">
                 <div class="w-10 h-10 rounded border border-primary flex items-center justify-center text-primary font-bold shadow-neon group-hover:scale-105 transition-transform">V</div>
-                <span class="font-bold text-2xl tracking-wide text-white">Valenzo's <span class="text-primary">PC</span></span>
+                <span class="font-bold text-2xl tracking-wide text-white">Ventas <span class="text-primary">PC</span></span>
             </a>
         </div>
 

@@ -123,14 +123,14 @@
     <table class="header">
         <tr>
             <td valign="top">
-                <div class="logo">Valenzo's <span>PC</span></div>
+                <div class="logo">Ventas <span>PC</span></div>
                 <div style="font-size: 11px; color: #666;">Computing & Solutions</div>
             </td>
             <td valign="top" class="company-info">
-                <strong>Valenzo's Computing S.A. de C.V.</strong><br>
+                <strong>Ventas PC S.A. de C.V.</strong><br>
                 Av. Tecnología 123, Centro<br>
                 San Luis Potosí, SLP, México<br>
-                soporte@valenzospc.com
+                soporte@ventaspc.com
             </td>
         </tr>
     </table>
@@ -223,7 +223,7 @@
 
     <!-- Footer -->
     <div class="footer">
-        <p>Gracias por confiar en Valenzo's Computing.</p>
+        <p>Gracias por confiar en Ventas PC.</p>
         <p>Este documento es un comprobante digital de su pedido. Para cualquier duda o aclaración sobre garantías, favor de presentar este ticket.</p>
     </div>
 

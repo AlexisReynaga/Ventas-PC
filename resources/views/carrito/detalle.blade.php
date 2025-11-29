@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmar Pedido | Valenzo's PC</title>
+    <title>Confirmar Pedido | Ventas PC</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>

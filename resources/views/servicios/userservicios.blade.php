@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servicios | Valenzo's PC</title>
+    <title>Servicios | Ventas PC</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -218,9 +218,9 @@
 
     <footer class="bg-dark border-t border-gray-800 mt-12 py-10">
         <div class="max-w-[1400px] mx-auto px-4 text-center">
-            <h2 class="text-2xl font-bold text-white mb-2">Valenzo's <span class="text-primary">PC</span></h2>
+            <h2 class="text-2xl font-bold text-white mb-2">Ventas <span class="text-primary">PC</span></h2>
             <p class="text-gray-500 text-sm mb-6">Tu experto en hardware en San Luis Potosí.</p>
-            <p class="mt-8 text-xs text-gray-700">&copy; 2024 Valenzo's PC. Todos los derechos reservados.</p>
+            <p class="mt-8 text-xs text-gray-700">&copy; 2025 Ventas PC. Todos los derechos reservados.</p>
         </div>
     </footer>
 

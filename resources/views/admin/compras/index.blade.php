@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial de Compras | Valenzo's PC</title>
+    <title>Historial de Compras | Ventas PC</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {

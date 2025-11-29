@@ -8,7 +8,7 @@
                     <span class="font-bold text-emerald-400 text-xl">V</span>
                 </div>
                 <div class="flex flex-col leading-none">
-                    <span class="font-bold text-lg text-white tracking-wide">Valenzo's</span>
+                    <span class="font-bold text-lg text-white tracking-wide">Ventas PC</span>
                     <span class="text-xs text-gray-400 font-medium tracking-widest group-hover:text-emerald-400 transition-colors">COMPUTING</span>
                 </div>
             </div>
